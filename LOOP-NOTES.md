@@ -1,3 +1,4 @@
 # Loop notes
 
 One dated line per grow-loop iteration: what shipped, or what blocked it.
+- 2026-09-23: shipped the second microsite, `ons-dataset-catalogue` (commit 1e71bbf, feat/stories). It needed a new source, so the `ons-datasets` adapter went into `uk-open-data-connectors` first (PR #6, stacked on the flood PR #2) and was vendored here with `node scripts/sync-connectors.mjs`. The page renders 338 dataset records, 310 stamped 2023 or 2024, 281 flagged as national statistics; those match a fresh call to `api.beta.ons.gov.uk/v1/datasets?limit=1000` today and the production deploy (Vercel READY, 41s). The gauge story was re-checked the same way (2,097 stations, River Thames 55). Environment note: port 3000 is held by another `next-server` on this machine, so the pre-push gate has to run as `E2E_PORT=3100 git push`.
