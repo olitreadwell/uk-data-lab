@@ -31,8 +31,11 @@ function fixtureFetchImpl(): typeof globalThis.fetch {
   const fetchFixture = async (input: string | URL | Request): Promise<Response> => {
     const target =
       typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
-    if (target.includes('api.beta.ons.gov.uk')) {
+    if (new URL(target).hostname === 'api.beta.ons.gov.uk') {
       return jsonResponse(readFixtureJson('ons-datasets.json'));
+    }
+    if (new URL(target).hostname === 'api.ratings.food.gov.uk') {
+      return jsonResponse(readFixtureJson('food-hygiene-authorities.json'));
     }
     if (target.includes('/readings')) {
       return jsonResponse(readFixtureJson('flood-station-readings.json'));
@@ -47,17 +50,19 @@ afterEach(() => {
 });
 
 describe('registry', () => {
-  it('registers the Environment Agency and ONS adapters', () => {
+  it('registers the Environment Agency, ONS, and FSA adapters', () => {
     expect(UK_DATA_SOURCES.map((source) => source.id)).toEqual([
       'flood-stations',
       'flood-readings',
       'ons-datasets',
+      'food-hygiene-authorities',
     ]);
   });
 
   it('looks up a source adapter by id', () => {
     expect(getUkDataSource('flood-readings')?.name).toContain('Environment Agency');
     expect(getUkDataSource('ons-datasets')?.name).toContain('Office for National Statistics');
+    expect(getUkDataSource('food-hygiene-authorities')?.name).toContain('Food Standards Agency');
     expect(getUkDataSource('does-not-exist')).toBeUndefined();
   });
 

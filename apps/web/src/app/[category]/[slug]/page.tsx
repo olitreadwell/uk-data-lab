@@ -3,11 +3,13 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { FoodHygieneRegistersChart } from '@/components/FoodHygieneRegistersChart';
 import { GaugeRiversChart } from '@/components/GaugeRiversChart';
 import { MicrositeStory } from '@/components/MicrositeStory';
 import { OnsCatalogueChart } from '@/components/OnsCatalogueChart';
 import { ReportIssueButton } from '@/components/ReportIssueButton';
 import { StatCard } from '@/components/StatCard';
+import { fetchFoodHygieneSummary } from '@/lib/food-hygiene-data';
 import {
   buildGaugeStationIndex,
   FEATURED_STATION_REFERENCE,
@@ -209,6 +211,47 @@ async function renderStoryContent(slug: string, dataNote: string): Promise<Story
               accent="teal"
               testId="ons-national-statistics"
               dataValue={catalogue.nationalStatisticCount}
+            />
+          </dl>
+        ),
+        dataNote,
+      };
+    }
+    case 'food-hygiene-registers': {
+      const summary = await fetchFoodHygieneSummary();
+      const largestRegister = summary.largestAuthorities[0];
+      return {
+        chart: <FoodHygieneRegistersChart registers={summary.largestAuthorities} />,
+        stats: (
+          <dl className="grid gap-6 py-[var(--spacing-2xl)] sm:grid-cols-3">
+            <StatCard
+              label="Establishments listed"
+              value={formatCount(summary.establishmentCount)}
+              accent="amber"
+              testId="food-hygiene-establishments"
+              dataValue={summary.establishmentCount}
+            />
+            <StatCard
+              label="Registers listed"
+              value={formatCount(summary.authorityCount)}
+              accent="amber"
+              testId="food-hygiene-registers"
+              dataValue={summary.authorityCount}
+            />
+            <StatCard
+              label={
+                largestRegister === undefined
+                  ? 'Largest register'
+                  : largestRegister.localAuthorityName
+              }
+              value={
+                largestRegister === undefined
+                  ? 'No data'
+                  : formatCount(largestRegister.establishmentCount)
+              }
+              accent="amber"
+              testId="food-hygiene-largest-register"
+              dataValue={largestRegister?.establishmentCount}
             />
           </dl>
         ),

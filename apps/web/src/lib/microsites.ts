@@ -8,6 +8,7 @@ import { PUBLISHED_MICROSITES } from './published-microsites';
 export type MicrositeDataSource =
   | 'Environment Agency'
   | 'Office for National Statistics (ONS)'
+  | 'Food Standards Agency'
   | 'data.gov.uk'
   | 'Ordnance Survey'
   | 'Met Office'
@@ -158,8 +159,8 @@ export const MICROSITES: MicrositeConfig[] = withHiddenMicrositesRemoved<Microsi
     slug: 'gauge-index',
     keyFacts: [
       'River Thames: 55 gauges, more than any other river in the sample.',
-      'The sample holds 2,097 stations spread across 808 named rivers.',
-      'Rainfall shows up on eight of them; 2,075 publish a water level and 89 publish flow.',
+      'The sample holds 2,095 stations spread across 808 named rivers.',
+      'Rainfall shows up on eight of them; 2,073 publish a water level and 89 publish flow.',
     ],
     howToRead: 'Longer bars mean more gauges on that river; hover a bar for the exact count.',
     sourceUrl: 'https://environment.data.gov.uk/flood-monitoring/doc/reference',
@@ -167,10 +168,10 @@ export const MICROSITES: MicrositeConfig[] = withHiddenMicrositesRemoved<Microsi
     eyebrow: 'the gauge index',
     title: 'The River Thames carries more gauges than any other river in England.',
     description:
-      'The Environment Agency publishes 2,097 monitoring stations. The River Thames holds 55 of them, more than any other river in the sample. Almost all of the network watches water level rather than rain.',
+      'The Environment Agency publishes 2,095 monitoring stations. The River Thames holds 55 of them, more than any other river in the sample. Almost all of the network watches water level rather than rain.',
     paragraphs: [
       'The gauges exist to warn people about flooding. Most sit on a river or a stream and take a reading every 15 minutes. Where a station publishes flow as well as level, the flow is worked out from the level rather than measured on its own.',
-      'Thirty-nine stations in the sample were closed or suspended on the snapshot date, and 202 carry no status at all. Nine more have no coordinates recorded, all of them groundwater boreholes, because the agency leaves the map position empty for those.',
+      'Thirty-nine stations in the sample were closed or suspended on the snapshot date, and 201 carry no status at all. Nine more have no coordinates recorded, all of them groundwater boreholes, because the agency leaves the map position empty for those.',
       'The agency writes "Tide" in the river field for tidal monitoring sites. That is why it sits second in the chart without being a river.',
     ],
     accent: 'cyan',
@@ -178,7 +179,7 @@ export const MICROSITES: MicrositeConfig[] = withHiddenMicrositesRemoved<Microsi
     chartType: 'Bar chart',
     category: 'Environment & geography',
     dataNote:
-      'Data: Environment Agency flood-monitoring API, /id/stations. The list holds the 2,097 rows the endpoint returned for _limit=3000 on 23 September 2026. The agency caps the response below the requested limit, so treat the count as a floor rather than the whole network. River names are as the agency publishes them, including "Tide" at tidal sites. The live level comes from Bourton Dickler on the River Dikler, which reports every 15 minutes in metres above ordnance datum.',
+      'Data: Environment Agency flood-monitoring API, /id/stations. The list holds the 2,095 rows the endpoint returned for _limit=3000 on 24 September 2026. The agency caps the response below the requested limit, so treat the count as a floor rather than the whole network. The agency adds and removes stations through the day, so the total moves by a few between builds. River names are as the agency publishes them, including "Tide" at tidal sites. The live level comes from Bourton Dickler on the River Dikler, which reports every 15 minutes in metres above ordnance datum.',
     references: [
       {
         label: 'Flood-monitoring API reference (Environment Agency)',
@@ -244,6 +245,55 @@ export const MICROSITES: MicrositeConfig[] = withHiddenMicrositesRemoved<Microsi
       {
         label: 'The Code of Practice for Statistics (Office for Statistics Regulation)',
         url: 'https://osr.statisticsauthority.gov.uk/the-code-of-practice-for-statistics/',
+        kind: 'data',
+      },
+      {
+        label: 'Open Government Licence v3.0',
+        url: 'https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/',
+        kind: 'licence',
+      },
+    ],
+  },
+  {
+    slug: 'food-hygiene-registers',
+    keyFacts: [
+      'Birmingham: 10,239 establishments, the largest register in the country.',
+      '363 registers between them hold 612,721 establishments.',
+      '331 registers run the five-point rating scheme; the 32 Scottish ones run pass or improve.',
+    ],
+    howToRead:
+      'Longer bars mean more establishments on that register; hover a bar for the exact count.',
+    sourceUrl: 'https://api.ratings.food.gov.uk/help',
+    label: 'Food hygiene registers',
+    eyebrow: 'the food hygiene registers',
+    title: 'Birmingham lists 10,239 food outlets, more than any other register in the UK.',
+    description:
+      'The Food Standards Agency publishes 363 local authority food hygiene registers holding 612,721 establishments. Birmingham holds the most at 10,239, and the 32 Scottish registers run their own scheme.',
+    paragraphs: [
+      'Every food business sits on a register kept by its local authority, and the Food Standards Agency collects those registers into one list with a count of establishments against each one. The count is premises on the register, not premises that have been inspected.',
+      'Scotland runs a separate scheme. Its 32 registers report pass or improve rather than a score out of five, so the FSA files them under a different scheme type from the 331 registers elsewhere in the UK.',
+      'The registers vary in size. River Tees holds 3 establishments and Hull and Goole Port holds 5, while the median register holds 1,317. Those two smallest registers cover port health rather than a local authority district.',
+    ],
+    accent: 'amber',
+    dataSource: 'Food Standards Agency',
+    chartType: 'Bar chart',
+    category: 'Health',
+    dataNote:
+      'Data: Food Standards Agency Food Hygiene Rating Scheme API, /Authorities/basic, called with the x-api-version: 2 header the FSA requires. The call returned 363 registers holding 612,721 establishments on 24 September 2026. Establishment counts are the FSA totals for each register, and they count premises on the register rather than premises inspected. If the API is unreachable at build time the page falls back to the committed snapshot in apps/web/src/fixtures/food-hygiene-authorities-sample.json and logs that it did.',
+    references: [
+      {
+        label: 'Food Hygiene Rating Scheme API help (Food Standards Agency)',
+        url: 'https://api.ratings.food.gov.uk/help',
+        kind: 'data',
+      },
+      {
+        label: 'Food hygiene ratings open data (Food Standards Agency)',
+        url: 'https://ratings.food.gov.uk/open-data',
+        kind: 'data',
+      },
+      {
+        label: 'Food Hygiene Information Scheme (Food Standards Scotland)',
+        url: 'https://www.foodstandards.gov.scot/consumer-advice/fhis',
         kind: 'data',
       },
       {

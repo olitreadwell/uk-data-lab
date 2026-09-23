@@ -68,7 +68,7 @@ export default async function HomePage(): Promise<React.ReactElement> {
           <p className="numeral-paragraph-lg text-[var(--color-muted)]">
             {galleryCards.length} live microsite{galleryCards.length === 1 ? '' : 's'}. Source data
             read at deploy time from keyless APIs under the Open Government Licence: Environment
-            Agency river gauges and the ONS dataset catalogue.
+            Agency river gauges, the ONS dataset catalogue, and the FSA food hygiene registers.
           </p>
         </Stack>
         <div className="pb-[var(--spacing-3xl)]">

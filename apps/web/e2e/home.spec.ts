@@ -50,4 +50,13 @@ test.describe('home', () => {
     const count = await page.getAttribute('[data-testid="ons-datasets"]', 'data-value');
     expect(Number(count)).toBeGreaterThan(200);
   });
+
+  test('@smoke counts the establishments on the food hygiene registers', async ({ page }) => {
+    await page.goto('./health/food-hygiene-registers');
+    const count = await page.getAttribute(
+      '[data-testid="food-hygiene-establishments"]',
+      'data-value',
+    );
+    expect(Number(count)).toBeGreaterThan(100000);
+  });
 });

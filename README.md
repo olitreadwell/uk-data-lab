@@ -2,16 +2,23 @@
 
 Example site for
 [uk-open-data-connectors](https://github.com/olitreadwell/uk-open-data-connectors).
-One microsite, the gauge index, showing the full pipeline from a UK public-data
-connector to a deployed static chart.
+Three microsites showing the full pipeline from a UK public-data connector to a
+deployed static chart.
 
-## The microsite
+## The microsites
 
-- **The gauge index**: the Environment Agency publishes 2,097 monitoring
+- **The gauge index**: the Environment Agency publishes 2,095 monitoring
   stations across England. The River Thames carries 55 of them, more than any
   other river, and eight stations report rainfall. Data from the agency
   flood-monitoring API, fetched at deploy time under the Open Government
   Licence v3.0.
+- **The ONS catalogue**: the ONS beta API lists 338 dataset records, 310 of them
+  stamped 2023 or 2024 and 281 flagged as national statistics. Data from the
+  ONS beta API, fetched at deploy time under the Open Government Licence v3.0.
+- **The food hygiene registers**: the Food Standards Agency lists 363 local
+  authority food hygiene registers holding 612,721 establishments, with
+  Birmingham's 10,239 at the top. Data from the FSA Food Hygiene Rating Scheme
+  API, fetched at deploy time under the Open Government Licence v3.0.
 
 ## What this example shows
 

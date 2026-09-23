@@ -28,7 +28,7 @@ vi.mock('@/lib/gauge-data', async (importOriginal) => {
     ...actual,
     fetchGaugeStationSample: vi.fn().mockResolvedValue([]),
     buildGaugeStationIndex: vi.fn().mockReturnValue({
-      stationCount: 2097,
+      stationCount: 2095,
       riverCount: 808,
       measureCount: 2933,
       topRivers: [
@@ -67,6 +67,35 @@ vi.mock('@/lib/ons-catalogue-data', async (importOriginal) => {
   };
 });
 
+vi.mock('@/lib/food-hygiene-data', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/food-hygiene-data')>();
+  return {
+    ...actual,
+    fetchFoodHygieneSummary: vi.fn().mockResolvedValue({
+      authorityCount: 363,
+      establishmentCount: 612721,
+      fhrsAuthorityCount: 331,
+      fhisAuthorityCount: 32,
+      largestAuthorities: [
+        {
+          localAuthorityId: 374,
+          localAuthorityCode: '402',
+          localAuthorityName: 'Birmingham',
+          establishmentCount: 10239,
+          scheme: 'fhrs' as const,
+        },
+        {
+          localAuthorityId: 397,
+          localAuthorityCode: '413',
+          localAuthorityName: 'Leeds',
+          establishmentCount: 7428,
+          scheme: 'fhrs' as const,
+        },
+      ],
+    }),
+  };
+});
+
 describe('MicrositePage', () => {
   it('renders the gauge story with narrative, chart, and sources', async () => {
     const stream = await renderToReadableStream(
@@ -91,7 +120,7 @@ describe('MicrositePage', () => {
       <MicrositePage params={Promise.resolve(paramsFor('gauge-index'))} />,
     );
     const html = await new Response(stream).text();
-    expect(html).toContain('2,097');
+    expect(html).toContain('2,095');
     expect(html).toContain('River Thames');
     expect(html).toContain('Bourton Dickler, steady');
   });
@@ -172,6 +201,51 @@ describe('MicrositePage', () => {
         title: 'ONS catalogue - uk-data-lab',
         description: expect.any(String),
         url: '/open-data/ons-dataset-catalogue/',
+        type: 'article',
+      },
+    });
+  });
+
+  it('renders the food hygiene story with narrative, chart, and sources', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('food-hygiene-registers'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain('Birmingham lists 10,239 food outlets');
+    expect(html).toContain('Scotland runs a separate scheme');
+    expect(html).toContain('Key facts');
+    expect(html).toContain('How to read this chart');
+    expect(html).toContain('Sources and further reading');
+    expect(html).toContain('Food Hygiene Rating Scheme API help');
+    expect(html).toContain('Food Hygiene Information Scheme');
+    expect(html).toContain('href="/health"');
+    expect(html).toContain('Food hygiene registers');
+    expect(html.match(/<h1[^>]*>/g) ?? []).toHaveLength(1);
+  });
+
+  it('reads the headline numbers out of the fetched registers', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('food-hygiene-registers'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain('data-testid="food-hygiene-establishments" data-value="612721"');
+    expect(html).toContain('data-testid="food-hygiene-registers" data-value="363"');
+    expect(html).toContain('data-testid="food-hygiene-largest-register" data-value="10239"');
+    expect(html).toContain('View the registers as a table');
+    expect(html).toContain('>Birmingham<');
+    expect(html).toContain('>10,239<');
+  });
+
+  it('returns a unique document title for the food hygiene microsite', async () => {
+    await expect(
+      generateMetadata({ params: Promise.resolve(paramsFor('food-hygiene-registers')) }),
+    ).resolves.toEqual({
+      title: 'Food hygiene registers - uk-data-lab',
+      description: expect.any(String),
+      openGraph: {
+        title: 'Food hygiene registers - uk-data-lab',
+        description: expect.any(String),
+        url: '/health/food-hygiene-registers/',
         type: 'article',
       },
     });
