@@ -13,7 +13,7 @@ import path from 'node:path';
 export const FLOOD_STATIONS_URL =
   'https://environment.data.gov.uk/flood-monitoring/id/stations?_limit=3000';
 
-/** The agency caps the response below the requested limit: 3000 returns 2097. */
+/** The agency caps the response below the requested limit: 3000 returns 2095. */
 export const FLOOD_STATIONS_REQUESTED_LIMIT = 3000;
 
 /** Station behind the live reading: Bourton Dickler on the River Dikler. */
@@ -219,6 +219,9 @@ export function buildGaugeLiveLevel(
 /** Fetches a URL with the long build-time timeout, or throws. */
 async function fetchJson(url: string): Promise<unknown> {
   const response = await globalThis.fetch(url, {
+    // The page promises the numbers the source returns on the build day, so
+    // never let Next's fetch cache serve a response from an earlier build.
+    cache: 'no-store',
     signal: AbortSignal.timeout(LIVE_PROBE_TIMEOUT_MS),
   });
   if (!response.ok) {

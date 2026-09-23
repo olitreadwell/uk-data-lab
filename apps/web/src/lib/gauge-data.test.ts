@@ -60,7 +60,7 @@ function station(notation: string, riverName: string): FloodStation {
 describe('buildGaugeStationIndex', () => {
   it('counts stations, rivers, and measures from the committed snapshot', () => {
     const index = buildGaugeStationIndex(STATIONS_SNAPSHOT);
-    expect(index.stationCount).toBe(2097);
+    expect(index.stationCount).toBe(2095);
     expect(index.riverCount).toBe(808);
     expect(index.measureCount).toBe(2933);
   });
@@ -124,8 +124,8 @@ describe('buildGaugeLiveLevel', () => {
       preferredMeasureIds: preferredMeasureIdsFor(STATIONS_SNAPSHOT, FEATURED_STATION_REFERENCE),
     });
     expect(level.measureId).toContain('-stage-');
-    expect(level.latestLevelMetres).toBeCloseTo(0.071, 3);
-    expect(level.windowHours).toBe(25);
+    expect(level.latestLevelMetres).toBeCloseTo(0.068, 3);
+    expect(level.windowHours).toBe(26);
     expect(level.trend).toBe('steady');
     expect(level.stationReference).toBe(FEATURED_STATION_REFERENCE);
     expect(level.stationLabel).toBe(FEATURED_STATION_LABEL);
@@ -192,14 +192,14 @@ describe('fetch fallbacks', () => {
       vi.fn().mockResolvedValue(new Response(JSON.stringify(rawSnapshot), { status: 200 })),
     );
     const stations = await fetchGaugeStationSample();
-    expect(stations).toHaveLength(2097);
+    expect(stations).toHaveLength(2095);
   });
 
   it('falls back to the committed station snapshot when the fetch rejects', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('offline')));
     const stations = await fetchGaugeStationSample();
-    expect(stations).toHaveLength(2097);
+    expect(stations).toHaveLength(2095);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining('station snapshot'));
   });
 
@@ -209,7 +209,7 @@ describe('fetch fallbacks', () => {
     const level = await fetchGaugeLiveLevel(
       preferredMeasureIdsFor(STATIONS_SNAPSHOT, FEATURED_STATION_REFERENCE),
     );
-    expect(level.latestLevelMetres).toBeCloseTo(0.071, 3);
+    expect(level.latestLevelMetres).toBeCloseTo(0.068, 3);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining('readings snapshot'));
   });
 });

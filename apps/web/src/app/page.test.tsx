@@ -22,7 +22,7 @@ vi.mock('@/lib/gauge-data', async (importOriginal) => {
     ...actual,
     fetchGaugeStationSample: vi.fn().mockResolvedValue([]),
     buildGaugeStationIndex: vi.fn().mockReturnValue({
-      stationCount: 2097,
+      stationCount: 2095,
       riverCount: 808,
       measureCount: 2933,
       topRivers: [

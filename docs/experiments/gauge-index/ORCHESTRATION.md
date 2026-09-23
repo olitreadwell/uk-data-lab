@@ -12,7 +12,7 @@ Built 2026-09-23 to prove out `@uklab/uk-sources` end to end.
 
 ## Timing note
 
-The station endpoint takes about nine seconds to answer for 2,097 rows, well
+The station endpoint takes about nine seconds to answer for 2,095 rows, well
 past the five second default probe timeout in the connector. `gauge-data.ts`
 raises its own build-time timeout to 60 seconds and keeps the committed snapshot
 for when even that is not enough.

@@ -53,7 +53,7 @@ export default function AboutPage(): React.ReactElement {
           <h2 className="numeral-heading-lg">The gauge index</h2>
           <p className="numeral-paragraph-md">
             The first experiment counts the Environment Agency river gauges and asks which rivers
-            carry the most. The River Thames leads with 55 stations out of the 2,097 in the sample,
+            carry the most. The River Thames leads with 55 stations out of the 2,095 in the sample,
             across 808 named rivers.
           </p>
           <p className="numeral-paragraph-md">

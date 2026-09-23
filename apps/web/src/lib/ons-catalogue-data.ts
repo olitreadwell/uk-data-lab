@@ -19,6 +19,9 @@ const ONS_SNAPSHOT_PATH = path.join(process.cwd(), 'src/fixtures/ons-datasets-sa
 /** Fetches a URL with the build-time timeout, or throws. */
 async function fetchJson(url: string): Promise<unknown> {
   const response = await globalThis.fetch(url, {
+    // The page promises the numbers the source returns on the build day, so
+    // never let Next's fetch cache serve a response from an earlier build.
+    cache: 'no-store',
     signal: AbortSignal.timeout(ONS_LIVE_PROBE_TIMEOUT_MS),
   });
   if (!response.ok) {
