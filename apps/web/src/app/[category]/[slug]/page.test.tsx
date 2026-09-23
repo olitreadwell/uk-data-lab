@@ -49,6 +49,24 @@ vi.mock('@/lib/gauge-data', async (importOriginal) => {
   };
 });
 
+vi.mock('@/lib/ons-catalogue-data', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/ons-catalogue-data')>();
+  return {
+    ...actual,
+    fetchOnsCatalogueSummary: vi.fn().mockResolvedValue({
+      datasetCount: 338,
+      nationalStatisticCount: 281,
+      unflaggedCount: 17,
+      yearCounts: [
+        { year: '2022', datasetCount: 4 },
+        { year: '2023', datasetCount: 180 },
+        { year: '2024', datasetCount: 130 },
+        { year: '2026', datasetCount: 10 },
+      ],
+    }),
+  };
+});
+
 describe('MicrositePage', () => {
   it('renders the gauge story with narrative, chart, and sources', async () => {
     const stream = await renderToReadableStream(
@@ -113,5 +131,49 @@ describe('MicrositePage', () => {
         title: 'uk-data-lab',
       },
     );
+  });
+
+  it('renders the ONS catalogue story with narrative, chart, and sources', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('ons-dataset-catalogue'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain('The ONS dataset API lists 338 datasets');
+    expect(html).toContain('The national statistic flag is the ONS marking its own output');
+    expect(html).toContain('Key facts');
+    expect(html).toContain('How to read this chart');
+    expect(html).toContain('Sources and further reading');
+    expect(html).toContain('ONS Developer Hub');
+    expect(html).toContain('href="/open-data"');
+    expect(html).toContain('ONS catalogue');
+    expect(html.match(/<h1[^>]*>/g) ?? []).toHaveLength(1);
+  });
+
+  it('reads the headline numbers out of the fetched catalogue', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('ons-dataset-catalogue'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain('data-testid="ons-datasets" data-value="338"');
+    expect(html).toContain('data-testid="ons-stamped-recently" data-value="310"');
+    expect(html).toContain('data-testid="ons-national-statistics" data-value="281"');
+    expect(html).toContain('View the years as a table');
+    expect(html).toContain('>2023<');
+    expect(html).toContain('>180<');
+  });
+
+  it('returns a unique document title for the ONS catalogue microsite', async () => {
+    await expect(
+      generateMetadata({ params: Promise.resolve(paramsFor('ons-dataset-catalogue')) }),
+    ).resolves.toEqual({
+      title: 'ONS catalogue - uk-data-lab',
+      description: expect.any(String),
+      openGraph: {
+        title: 'ONS catalogue - uk-data-lab',
+        description: expect.any(String),
+        url: '/open-data/ons-dataset-catalogue/',
+        type: 'article',
+      },
+    });
   });
 });

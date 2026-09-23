@@ -202,4 +202,55 @@ export const MICROSITES: MicrositeConfig[] = withHiddenMicrositesRemoved<Microsi
       },
     ],
   },
+  {
+    slug: 'ons-dataset-catalogue',
+    keyFacts: [
+      '338 dataset records are listed, every one of them in state "published".',
+      '310 of the 338 carry a last-updated stamp from 2023 or 2024.',
+      '281 records are flagged as national statistics, 40 are not, and 17 leave the flag out.',
+      'The tag "ltla" appears on 286 records, more than any other keyword.',
+    ],
+    howToRead:
+      'Each bar is one year. Taller bars mean more dataset records carry that year in their last-updated stamp.',
+    sourceUrl: 'https://api.beta.ons.gov.uk/v1/datasets?limit=1000',
+    label: 'ONS catalogue',
+    eyebrow: 'the ONS catalogue',
+    title: 'The ONS dataset API lists 338 datasets, and 310 of them carry a 2023 or 2024 stamp.',
+    description:
+      'One keyless endpoint holds the ONS beta API dataset catalogue: 338 records, 281 of them flagged as national statistics, and 310 stamped 2023 or 2024 in the last-updated field.',
+    paragraphs: [
+      'The catalogue call is open. It needs no key and no login, and one request returned all 338 records.',
+      'last_updated is the API stamp on the dataset record, not the day the data behind it was published. It moves when the record changes, which is why 180 records sit in 2023, 130 in 2024, and only 12 in 2025 or 2026.',
+      'The national statistic flag is the ONS marking its own output against the Code of Practice for Statistics. 281 records carry it. Forty do not, and 17 leave the field out entirely.',
+      'Keywords are thin. Eleven records list none at all, and one tag, ltla, covers 286 of the 338.',
+    ],
+    accent: 'teal',
+    dataSource: 'Office for National Statistics (ONS)',
+    chartType: 'Histogram',
+    category: 'Open data & digital',
+    dataNote:
+      'Data: ONS beta API, /v1/datasets?limit=1000. The call returned 338 records on 23 September 2026, which is the whole catalogue: the response reports a total_count of 338 against a limit of 1000. last_updated is the timestamp the API holds for the dataset record, so it moves when the record changes rather than when the data behind it is released. If the API is unreachable at build time the page falls back to the committed snapshot in apps/web/src/fixtures/ons-datasets-sample.json and logs that it did.',
+    references: [
+      {
+        label: 'ONS beta API dataset catalogue (Office for National Statistics)',
+        url: 'https://api.beta.ons.gov.uk/v1/datasets?limit=1000',
+        kind: 'data',
+      },
+      {
+        label: 'ONS Developer Hub (Office for National Statistics)',
+        url: 'https://developer.ons.gov.uk/',
+        kind: 'data',
+      },
+      {
+        label: 'The Code of Practice for Statistics (Office for Statistics Regulation)',
+        url: 'https://osr.statisticsauthority.gov.uk/the-code-of-practice-for-statistics/',
+        kind: 'data',
+      },
+      {
+        label: 'Open Government Licence v3.0',
+        url: 'https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/',
+        kind: 'licence',
+      },
+    ],
+  },
 ]).filter((microsite) => PUBLISHED_MICROSITES.includes(microsite.slug));

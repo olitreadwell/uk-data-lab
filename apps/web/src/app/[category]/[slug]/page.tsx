@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 
 import { GaugeRiversChart } from '@/components/GaugeRiversChart';
 import { MicrositeStory } from '@/components/MicrositeStory';
+import { OnsCatalogueChart } from '@/components/OnsCatalogueChart';
 import { ReportIssueButton } from '@/components/ReportIssueButton';
 import { StatCard } from '@/components/StatCard';
 import {
@@ -12,8 +13,6 @@ import {
   FEATURED_STATION_REFERENCE,
   fetchGaugeLiveLevel,
   fetchGaugeStationSample,
-  type GaugeLiveLevel,
-  type GaugeStationIndex,
   preferredMeasureIdsFor,
 } from '@/lib/gauge-data';
 import {
@@ -23,6 +22,11 @@ import {
   MICROSITES,
   relatedMicrositesFor,
 } from '@/lib/microsites';
+import {
+  countDatasetsStampedIn,
+  fetchOnsCatalogueSummary,
+  ONS_PEAK_STAMP_YEARS,
+} from '@/lib/ons-catalogue-data';
 import { formatCount, formatLevelMetres, formatTrendLabel } from '@/lib/uk-format';
 
 interface MicrositePageProps {
@@ -66,18 +70,12 @@ export default async function MicrositePage({
     notFound();
   }
 
-  const stations = await fetchGaugeStationSample();
-  const index = buildGaugeStationIndex(stations);
-  const level = await fetchGaugeLiveLevel(
-    preferredMeasureIdsFor(stations, FEATURED_STATION_REFERENCE),
-  );
-
   const related = relatedMicrositesFor(microsite).map((candidate) => ({
     label: candidate.label,
     href: micrositePathFor(candidate),
   }));
 
-  const content = renderStoryContent(slug, { index, level });
+  const content = await renderStoryContent(slug, microsite.dataNote);
 
   return (
     <>
@@ -119,7 +117,7 @@ export default async function MicrositePage({
         accent={microsite.accent}
         chart={content.chart}
         stats={content.stats}
-        dataNote={microsite.dataNote}
+        dataNote={content.dataNote}
         references={microsite.references}
       />
       <ReportIssueButton pageLabel={microsite.label} />
@@ -127,28 +125,41 @@ export default async function MicrositePage({
   );
 }
 
-interface StoryData {
-  index: GaugeStationIndex;
-  level: GaugeLiveLevel;
+interface StoryContent {
+  chart: React.ReactNode;
+  stats: React.ReactNode;
+  /** Source note for the footer, defaulting to the microsite config's own. */
+  dataNote: string;
 }
 
-function renderStoryContent(
-  slug: string,
-  data: StoryData,
-): { chart: React.ReactNode; stats: React.ReactNode } {
+/**
+ * Builds the chart, stats, and source note for one story. Each story fetches
+ * only the data it draws, so a story page never depends on another story's
+ * upstream API.
+ *
+ * @param slug - microsite slug
+ * @param dataNote - the microsite config's source note
+ * @returns the chart, stat cards, and source note for the page
+ */
+async function renderStoryContent(slug: string, dataNote: string): Promise<StoryContent> {
   switch (slug) {
     case 'gauge-index': {
-      const busiestRiver = data.index.topRivers[0];
+      const stations = await fetchGaugeStationSample();
+      const index = buildGaugeStationIndex(stations);
+      const level = await fetchGaugeLiveLevel(
+        preferredMeasureIdsFor(stations, FEATURED_STATION_REFERENCE),
+      );
+      const busiestRiver = index.topRivers[0];
       return {
-        chart: <GaugeRiversChart rivers={data.index.topRivers} />,
+        chart: <GaugeRiversChart rivers={index.topRivers} />,
         stats: (
           <dl className="grid gap-6 py-[var(--spacing-2xl)] sm:grid-cols-3">
             <StatCard
               label="Gauges in the sample"
-              value={formatCount(data.index.stationCount)}
+              value={formatCount(index.stationCount)}
               accent="cyan"
               testId="gauge-stations"
-              dataValue={data.index.stationCount}
+              dataValue={index.stationCount}
             />
             <StatCard
               label={busiestRiver === undefined ? 'Busiest river' : busiestRiver.riverName}
@@ -160,17 +171,51 @@ function renderStoryContent(
               dataValue={busiestRiver?.stationCount}
             />
             <StatCard
-              label={`${data.level.stationLabel}, ${formatTrendLabel(data.level.trend)}`}
-              value={formatLevelMetres(data.level.latestLevelMetres)}
+              label={`${level.stationLabel}, ${formatTrendLabel(level.trend)}`}
+              value={formatLevelMetres(level.latestLevelMetres)}
               accent="cyan"
               testId="gauge-live-level"
-              dataValue={data.level.latestLevelMetres}
+              dataValue={level.latestLevelMetres}
             />
           </dl>
         ),
+        dataNote,
+      };
+    }
+    case 'ons-dataset-catalogue': {
+      const catalogue = await fetchOnsCatalogueSummary();
+      const peakYearsCount = countDatasetsStampedIn(catalogue, ONS_PEAK_STAMP_YEARS);
+      return {
+        chart: <OnsCatalogueChart yearCounts={catalogue.yearCounts} />,
+        stats: (
+          <dl className="grid gap-6 py-[var(--spacing-2xl)] sm:grid-cols-3">
+            <StatCard
+              label="Datasets in the catalogue"
+              value={formatCount(catalogue.datasetCount)}
+              accent="teal"
+              testId="ons-datasets"
+              dataValue={catalogue.datasetCount}
+            />
+            <StatCard
+              label={`Stamped ${ONS_PEAK_STAMP_YEARS.join(' or ')}`}
+              value={formatCount(peakYearsCount)}
+              accent="teal"
+              testId="ons-stamped-recently"
+              dataValue={peakYearsCount}
+            />
+            <StatCard
+              label="Flagged as national statistics"
+              value={formatCount(catalogue.nationalStatisticCount)}
+              accent="teal"
+              testId="ons-national-statistics"
+              dataValue={catalogue.nationalStatisticCount}
+            />
+          </dl>
+        ),
+        dataNote,
       };
     }
     default:
-      return { chart: null, stats: null };
+      return { chart: null, stats: null, dataNote };
   }
 }

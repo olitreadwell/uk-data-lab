@@ -66,9 +66,9 @@ export default async function HomePage(): Promise<React.ReactElement> {
             Small experiments digging through UK public data for the funny and the surprising.
           </h1>
           <p className="numeral-paragraph-lg text-[var(--color-muted)]">
-            {galleryCards.length} live microsite{galleryCards.length === 1 ? '' : 's'}. Environment
-            Agency river gauges, read at deploy time from a keyless API under the Open Government
-            Licence.
+            {galleryCards.length} live microsite{galleryCards.length === 1 ? '' : 's'}. Source data
+            read at deploy time from keyless APIs under the Open Government Licence: Environment
+            Agency river gauges and the ONS dataset catalogue.
           </p>
         </Stack>
         <div className="pb-[var(--spacing-3xl)]">

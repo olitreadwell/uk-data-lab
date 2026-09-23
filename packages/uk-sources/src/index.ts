@@ -18,6 +18,17 @@ export type {
   FloodReadingSummary,
   FloodStation,
 } from './floodMonitoring';
+/** Office for National Statistics dataset catalogue (keyless). */
+export {
+  fetchOnsDatasets,
+  onsDatasetsAdapter,
+  ONS_DATASETS_LIMIT,
+  ONS_DATASETS_URL,
+  parseOnsDatasets,
+  summarizeOnsDatasets,
+} from './onsDatasets';
+/** ONS catalogue types. */
+export type { OnsDatasetRecord, OnsDatasetSummary, OnsDatasetYearCount } from './onsDatasets';
 /** The uniform adapter registry and probe helpers. */
 export {
   UK_DATA_SOURCES,

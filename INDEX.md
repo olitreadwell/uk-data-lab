@@ -5,14 +5,16 @@ A map of this repo for anyone (or any agent) arriving cold.
 ## The site
 
 `uk-data-lab` is a static Next.js export of small experiments on UK public
-data. One microsite is published: the gauge index, which counts Environment
-Agency river gauges by river. The home page is
+data. Two microsites are published. The home page is
 (`apps/web/src/app/page.tsx`), and each story lives at
 `/<category-slug>/<slug>/`.
 
 - [gauge-index](docs/experiments/gauge-index) (alive) The River Thames carries
   55 gauges, more than any other river in the sample, from the Environment
   Agency flood-monitoring API.
+- [ons-dataset-catalogue](docs/experiments/ons-dataset-catalogue) (alive) The
+  ONS beta API lists 338 datasets, and 310 of them carry a 2023 or 2024
+  last-updated stamp.
 
 ## Where things are
 
@@ -20,6 +22,8 @@ Agency river gauges by river. The home page is
   source citations for every microsite, published or not.
 - `apps/web/src/lib/gauge-data.ts` - the fetch and transform layer for the
   gauge story. Live read at build time, committed snapshot as fallback.
+- `apps/web/src/lib/ons-catalogue-data.ts` - the same shape for the ONS
+  catalogue story.
 - `apps/web/src/components/` - chart and page components, each with unit tests.
 - `packages/uk-sources/` - the vendored connectors package. Never edit by hand;
   run `node scripts/sync-connectors.mjs`.

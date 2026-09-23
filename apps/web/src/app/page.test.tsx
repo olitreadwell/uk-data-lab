@@ -57,7 +57,7 @@ describe('HomePage', () => {
   it('links every visible card to its story page and omits hidden ones', async () => {
     const stream = await renderToReadableStream(<HomePage />);
     const html = await new Response(stream).text();
-    for (const slug of ['gauge-index']) {
+    for (const slug of ['gauge-index', 'ons-dataset-catalogue']) {
       expect(html).toContain(`href="/${categorySlugForTest(slug)}/${slug}"`);
     }
   });
