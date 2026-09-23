@@ -1,4 +1,4 @@
-# food-hygiene-registers — The Food Hygiene Registers
+# food-hygiene-registers: The Food Hygiene Registers
 
 ## Pitch
 
@@ -28,7 +28,7 @@ Two fields need reading with care, and the page says so:
 
 ## Verdict
 
-**alive** — the counts come from a live call at every deploy, the endpoint is
+**alive**: the counts come from a live call at every deploy, the endpoint is
 keyless, and repeated calls in the same day return the same totals. The prose
 numbers (363, 612,721, 10,239) are re-checked against a fresh call on each loop
 iteration.
