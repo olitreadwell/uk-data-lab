@@ -9,20 +9,20 @@ expect.extend(toHaveNoViolations);
 describe('AboutPage', () => {
   it('explains what the site is and where the data comes from', () => {
     render(<AboutPage />);
-    expect(screen.getByRole('heading', { level: 1, name: 'About nz-data-lab' })).toBeVisible();
-    expect(screen.getByText(/national sheep flock/)).toBeVisible();
-    expect(screen.getByText(/Stats NZ Aotearoa Data Explorer/)).toBeVisible();
-    expect(screen.getByRole('link', { name: 'nz-open-data-connectors' })).toHaveAttribute(
+    expect(screen.getByRole('heading', { level: 1, name: 'About uk-data-lab' })).toBeVisible();
+    expect(screen.getByText(/River Thames leads with 55 stations/)).toBeVisible();
+    expect(screen.getByText(/agency flood-monitoring API/)).toBeVisible();
+    expect(screen.getByRole('link', { name: 'uk-open-data-connectors' })).toHaveAttribute(
       'href',
-      'https://github.com/olitreadwell/nz-open-data-connectors',
+      'https://github.com/olitreadwell/uk-open-data-connectors',
     );
-    expect(screen.getByRole('link', { name: 'olitreadwell/new-zealand-data' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'awesome-open-uk-data' })).toHaveAttribute(
       'href',
-      'https://github.com/olitreadwell/new-zealand-data',
+      'https://github.com/olitreadwell/awesome-open-uk-data',
     );
     expect(screen.getByRole('link', { name: 'GitHub' })).toHaveAttribute(
       'href',
-      'https://github.com/olitreadwell/nz-data-lab',
+      'https://github.com/olitreadwell/uk-data-lab',
     );
   });
 

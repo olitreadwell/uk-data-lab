@@ -1,13 +1,21 @@
-import { Container } from '@nzlab/ui';
+import { Container } from '@uklab/ui';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { GaugeRiversChart } from '@/components/GaugeRiversChart';
 import { MicrositeStory } from '@/components/MicrositeStory';
 import { ReportIssueButton } from '@/components/ReportIssueButton';
-import { SheepChart } from '@/components/SheepChart';
 import { StatCard } from '@/components/StatCard';
-import { env } from '@/env';
+import {
+  buildGaugeStationIndex,
+  FEATURED_STATION_REFERENCE,
+  fetchGaugeLiveLevel,
+  fetchGaugeStationSample,
+  type GaugeLiveLevel,
+  type GaugeStationIndex,
+  preferredMeasureIdsFor,
+} from '@/lib/gauge-data';
 import {
   categorySlugFor,
   freshnessLabelFor,
@@ -15,8 +23,7 @@ import {
   MICROSITES,
   relatedMicrositesFor,
 } from '@/lib/microsites';
-import { fetchSheepSeries } from '@/lib/sheep-data';
-import { formatMillions as formatMillionsSheep } from '@/lib/sheep-format';
+import { formatCount, formatLevelMetres, formatTrendLabel } from '@/lib/uk-format';
 
 interface MicrositePageProps {
   params: Promise<{ category: string; slug: string }>;
@@ -35,14 +42,14 @@ export async function generateMetadata({ params }: MicrositePageProps): Promise<
   const { category, slug } = await params;
   const microsite = MICROSITES.find((candidate) => candidate.slug === slug);
   if (microsite === undefined || categorySlugFor(microsite) !== category) {
-    return { title: 'nz-data-lab' };
+    return { title: 'uk-data-lab' };
   }
   const path = micrositePathFor(microsite);
   return {
-    title: `${microsite.label} - nz-data-lab`,
+    title: `${microsite.label} - uk-data-lab`,
     description: microsite.description,
     openGraph: {
-      title: `${microsite.label} - nz-data-lab`,
+      title: `${microsite.label} - uk-data-lab`,
       description: microsite.description,
       url: path,
       type: 'article',
@@ -59,14 +66,18 @@ export default async function MicrositePage({
     notFound();
   }
 
-  const [sheep] = await Promise.all([fetchSheepSeries(env.STATS_NZ_SUBSCRIPTION_KEY)]);
+  const stations = await fetchGaugeStationSample();
+  const index = buildGaugeStationIndex(stations);
+  const level = await fetchGaugeLiveLevel(
+    preferredMeasureIdsFor(stations, FEATURED_STATION_REFERENCE),
+  );
 
   const related = relatedMicrositesFor(microsite).map((candidate) => ({
     label: candidate.label,
     href: micrositePathFor(candidate),
   }));
 
-  const content = renderStoryContent(slug, { sheep });
+  const content = renderStoryContent(slug, { index, level });
 
   return (
     <>
@@ -117,7 +128,8 @@ export default async function MicrositePage({
 }
 
 interface StoryData {
-  sheep: Awaited<ReturnType<typeof fetchSheepSeries>>;
+  index: GaugeStationIndex;
+  level: GaugeLiveLevel;
 }
 
 function renderStoryContent(
@@ -125,33 +137,39 @@ function renderStoryContent(
   data: StoryData,
 ): { chart: React.ReactNode; stats: React.ReactNode } {
   switch (slug) {
-    case 'sheep-index':
+    case 'gauge-index': {
+      const busiestRiver = data.index.topRivers[0];
       return {
-        chart: <SheepChart points={data.sheep.points} />,
+        chart: <GaugeRiversChart rivers={data.index.topRivers} />,
         stats: (
           <dl className="grid gap-6 py-[var(--spacing-2xl)] sm:grid-cols-3">
             <StatCard
-              label={`Sheep right now (${data.sheep.latest.year})`}
-              value={formatMillionsSheep(data.sheep.latest.sheep)}
-              accent="amber"
-              testId="sheep-latest"
-              dataValue={data.sheep.latest.sheep}
+              label="Gauges in the sample"
+              value={formatCount(data.index.stationCount)}
+              accent="cyan"
+              testId="gauge-stations"
+              dataValue={data.index.stationCount}
             />
             <StatCard
-              label={`Peak flock (${data.sheep.peak.year})`}
-              value={formatMillionsSheep(data.sheep.peak.sheep)}
-              accent="amber"
+              label={busiestRiver === undefined ? 'Busiest river' : busiestRiver.riverName}
+              value={
+                busiestRiver === undefined ? 'No data' : formatCount(busiestRiver.stationCount)
+              }
+              accent="cyan"
+              testId="gauge-busiest-river"
+              dataValue={busiestRiver?.stationCount}
             />
             <StatCard
-              label="Change since peak"
-              value={`${Math.round(data.sheep.changeFromPeakPercent)}%`}
-              accent="amber"
-              testId="sheep-change"
-              dataValue={Math.round(data.sheep.changeFromPeakPercent)}
+              label={`${data.level.stationLabel}, ${formatTrendLabel(data.level.trend)}`}
+              value={formatLevelMetres(data.level.latestLevelMetres)}
+              accent="cyan"
+              testId="gauge-live-level"
+              dataValue={data.level.latestLevelMetres}
             />
           </dl>
         ),
       };
+    }
     default:
       return { chart: null, stats: null };
   }

@@ -1,43 +1,45 @@
-# UK Data Lab (scaffold)
-
-Derived from nz-data-lab. Source adapters, front-page visualisations, and the 30-minute ship loop are being ported to UK public data.
-
-# nz-data-lab
+# uk-data-lab
 
 Example site for
-[nz-open-data-connectors](https://github.com/olitreadwell/nz-open-data-connectors).
-One microsite, the sheep index, showing the full pipeline from a New Zealand
-public-data connector to a deployed static chart.
+[uk-open-data-connectors](https://github.com/olitreadwell/uk-open-data-connectors).
+One microsite, the gauge index, showing the full pipeline from a UK public-data
+connector to a deployed static chart.
 
 ## The microsite
 
-- **The sheep index**: New Zealand's national flock has nearly halved since
-  1994, from 49.5 million sheep to 23.3 million. Data from the Stats NZ
-  Aotearoa Data Explorer, fetched at deploy time.
+- **The gauge index**: the Environment Agency publishes 2,097 monitoring
+  stations across England. The River Thames carries 55 of them, more than any
+  other river, and eight stations report rainfall. Data from the agency
+  flood-monitoring API, fetched at deploy time under the Open Government
+  Licence v3.0.
 
 ## What this example shows
 
-- `apps/web/src/lib/sheep-data.ts` calls `createStatsNzClient` from
-  `@nzlab/stats-nz` to pull table AGR_AGR_003 (Livestock Numbers by Regional
-  Council) at build time.
-- The build falls back to a committed CSV fixture when the Stats NZ gateway
-  blocks the build runner, so the static export always succeeds.
-- `SheepChart` renders the series with Recharts; the page and chart have unit
-  tests, and the e2e suite asserts a plausible live sheep count.
+- `apps/web/src/lib/gauge-data.ts` calls `parseFloodStations` from
+  `@uklab/uk-sources` to pull the station list at build time, and
+  `parseFloodReadings` for the live level at Bourton Dickler.
+- The build falls back to committed snapshots when the agency API is slow or
+  blocked, so the static export always succeeds.
+- `GaugeRiversChart` renders the ranking with Recharts; the page and chart have
+  unit tests, and the e2e suite asserts a plausible live level and station count.
 
 ## Connectors wiring
 
-The site uses one package from the connectors repo, `@nzlab/stats-nz`,
-vendored under `packages/stats-nz`. npm git dependencies cannot target a
+The site uses one package from the connectors repo, `@uklab/uk-sources`,
+vendored under `packages/uk-sources`. npm git dependencies cannot target a
 subpackage inside a workspace monorepo, so the package is copied here and kept
 in sync with a script:
 
 ```bash
-node scripts/sync-connectors.mjs                     # uses ../nz-open-data-connectors
+node scripts/sync-connectors.mjs                     # uses ../uk-open-data-connectors
 node scripts/sync-connectors.mjs --from /path/to/repo
 ```
 
-Edit `packages/stats-nz` only by syncing from the connectors repo.
+The script renames the `@nzlab` scope to `@uklab`, strips the `.js` extension
+from relative imports, and points the package entry at `src/`. All three happen
+in the script rather than by hand, so a sync is reproducible.
+
+Edit `packages/uk-sources` only by syncing from the connectors repo.
 
 ## Stack
 
@@ -61,3 +63,6 @@ npm test
 npm run lint
 npm run build
 ```
+
+Playwright serves the built `out/` directory on port 3000. Set `E2E_PORT` to run
+the suite beside another dev server.

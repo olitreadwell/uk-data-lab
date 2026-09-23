@@ -22,67 +22,86 @@ vi.mock('next/navigation', () => ({
   },
 }));
 
-vi.mock('@/lib/sheep-data', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/lib/sheep-data')>();
+vi.mock('@/lib/gauge-data', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/gauge-data')>();
   return {
     ...actual,
-    fetchSheepSeries: vi.fn().mockResolvedValue({
-      points: [
-        { year: 1994, sheep: 49466054 },
-        { year: 2025, sheep: 23252463 },
+    fetchGaugeStationSample: vi.fn().mockResolvedValue([]),
+    buildGaugeStationIndex: vi.fn().mockReturnValue({
+      stationCount: 2097,
+      riverCount: 808,
+      measureCount: 2933,
+      topRivers: [
+        { riverName: 'River Thames', stationCount: 55 },
+        { riverName: 'Tide', stationCount: 34 },
       ],
-      first: { year: 1994, sheep: 49466054 },
-      peak: { year: 1994, sheep: 49466054 },
-      latest: { year: 2025, sheep: 23252463 },
-      changeFromFirstPercent: -53,
-      changeFromPeakPercent: -53,
+    }),
+    fetchGaugeLiveLevel: vi.fn().mockResolvedValue({
+      stationReference: '1029TH',
+      stationLabel: 'Bourton Dickler',
+      measureId: 'm1',
+      latestLevelMetres: 0.071,
+      latestReadingTime: '2026-09-23T08:00:00Z',
+      changeMetres: 0.003,
+      windowHours: 25,
+      trend: 'steady' as const,
     }),
   };
 });
 
 describe('MicrositePage', () => {
-  it('renders the sheep story with narrative, chart, and sources', async () => {
+  it('renders the gauge story with narrative, chart, and sources', async () => {
     const stream = await renderToReadableStream(
-      <MicrositePage params={Promise.resolve(paramsFor('sheep-index'))} />,
+      <MicrositePage params={Promise.resolve(paramsFor('gauge-index'))} />,
     );
     const html = await new Response(stream).text();
-    expect(html).toContain('national animal is in freefall');
-    expect(html).toContain('70 million sheep');
+    expect(html).toContain('more gauges than any other river in England');
+    expect(html).toContain('Thirty-nine stations');
     expect(html).toContain('Key facts');
     expect(html).toContain('How to read this chart');
     expect(html).toContain('Open source data');
     expect(html).toContain('Sources and further reading');
-    expect(html).toContain('Sheep number falls to six for each person');
+    expect(html).toContain('Flood-monitoring API reference');
     expect(html).toContain('aria-label="Breadcrumb"');
-    expect(html).toContain('href="/agriculture"');
-    expect(html).toContain('Sheep index');
+    expect(html).toContain('href="/environment"');
+    expect(html).toContain('Gauge index');
     expect(html.match(/<h1[^>]*>/g) ?? []).toHaveLength(1);
+  });
+
+  it('reads the headline numbers out of the fetched index', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('gauge-index'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain('2,097');
+    expect(html).toContain('River Thames');
+    expect(html).toContain('Bourton Dickler, steady');
   });
 
   it('renders exactly one h1 with the microsite title before any h2', async () => {
     const stream = await renderToReadableStream(
-      <MicrositePage params={Promise.resolve(paramsFor('sheep-index'))} />,
+      <MicrositePage params={Promise.resolve(paramsFor('gauge-index'))} />,
     );
     const html = await new Response(stream).text();
     const h1s = html.match(/<h1[^>]*>(.*?)<\/h1>/g) ?? [];
     expect(h1s).toHaveLength(1);
-    expect(h1s[0]).toContain('national animal is in freefall');
+    expect(h1s[0]).toContain('more gauges than any other river in England');
     const headingIndexes = ['<h1', '<h2', '<h3', '<h4', '<h5', '<h6']
       .map((tag) => html.indexOf(tag))
       .filter((index) => index !== -1);
     expect(Math.min(...headingIndexes)).toBe(html.indexOf('<h1'));
   });
 
-  it('returns a unique document title for the sheep microsite', async () => {
+  it('returns a unique document title for the gauge microsite', async () => {
     await expect(
-      generateMetadata({ params: Promise.resolve(paramsFor('sheep-index')) }),
+      generateMetadata({ params: Promise.resolve(paramsFor('gauge-index')) }),
     ).resolves.toEqual({
-      title: 'Sheep index - nz-data-lab',
+      title: 'Gauge index - uk-data-lab',
       description: expect.any(String),
       openGraph: {
-        title: 'Sheep index - nz-data-lab',
+        title: 'Gauge index - uk-data-lab',
         description: expect.any(String),
-        url: '/agriculture/sheep-index/',
+        url: '/environment/gauge-index/',
         type: 'article',
       },
     });
@@ -91,7 +110,7 @@ describe('MicrositePage', () => {
   it('returns a generic title for an unknown microsite', async () => {
     await expect(generateMetadata({ params: Promise.resolve(paramsFor('nope')) })).resolves.toEqual(
       {
-        title: 'nz-data-lab',
+        title: 'uk-data-lab',
       },
     );
   });

@@ -1,4 +1,4 @@
-import config from '@nzlab/config-eslint/react-library';
+import config from '@uklab/config-eslint/react-library';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 

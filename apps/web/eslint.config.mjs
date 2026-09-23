@@ -1,4 +1,4 @@
-import config from '@nzlab/config-eslint/nextjs';
+import config from '@uklab/config-eslint/nextjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 

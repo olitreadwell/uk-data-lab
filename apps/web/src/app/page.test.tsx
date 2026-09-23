@@ -16,21 +16,29 @@ function categorySlugForTest(slug: string): string {
   return microsite === undefined ? 'nope' : CATEGORY_SLUGS[microsite.category];
 }
 
-vi.mock('@/lib/sheep-data', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/lib/sheep-data')>();
+vi.mock('@/lib/gauge-data', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/gauge-data')>();
   return {
     ...actual,
-    fetchSheepSeries: vi.fn().mockResolvedValue({
-      points: [
-        { year: 1994, sheep: 49466054 },
-        { year: 2010, sheep: 32562612 },
-        { year: 2025, sheep: 23252463 },
+    fetchGaugeStationSample: vi.fn().mockResolvedValue([]),
+    buildGaugeStationIndex: vi.fn().mockReturnValue({
+      stationCount: 2097,
+      riverCount: 808,
+      measureCount: 2933,
+      topRivers: [
+        { riverName: 'River Thames', stationCount: 55 },
+        { riverName: 'Tide', stationCount: 34 },
       ],
-      first: { year: 1994, sheep: 49466054 },
-      peak: { year: 1994, sheep: 49466054 },
-      latest: { year: 2025, sheep: 23252463 },
-      changeFromFirstPercent: -53,
-      changeFromPeakPercent: -53,
+    }),
+    fetchGaugeLiveLevel: vi.fn().mockResolvedValue({
+      stationReference: '1029TH',
+      stationLabel: 'Bourton Dickler',
+      measureId: 'm1',
+      latestLevelMetres: 0.071,
+      latestReadingTime: '2026-09-23T08:00:00Z',
+      changeMetres: 0.003,
+      windowHours: 25,
+      trend: 'steady' as const,
     }),
   };
 });
@@ -39,8 +47,8 @@ describe('HomePage', () => {
   it('renders the mission line and the visible microsite cards', async () => {
     const stream = await renderToReadableStream(<HomePage />);
     const html = await new Response(stream).text();
-    expect(html).toContain('Small experiments digging through New Zealand public data');
-    expect(html).toContain('national animal is in freefall');
+    expect(html).toContain('Small experiments digging through UK public data');
+    expect(html).toContain('more gauges than any other river in England');
     for (const slug of HIDDEN_MICROSITES) {
       expect(html).not.toContain(`href="/${categorySlugForTest(slug)}/${slug}"`);
     }
@@ -49,18 +57,14 @@ describe('HomePage', () => {
   it('links every visible card to its story page and omits hidden ones', async () => {
     const stream = await renderToReadableStream(<HomePage />);
     const html = await new Response(stream).text();
-    const visibleWithCards = ['sheep-index'];
-    for (const slug of visibleWithCards) {
+    for (const slug of ['gauge-index']) {
       expect(html).toContain(`href="/${categorySlugForTest(slug)}/${slug}"`);
-    }
-    for (const slug of HIDDEN_MICROSITES) {
-      expect(html).not.toContain(`href="/${categorySlugForTest(slug)}/${slug}"`);
     }
   });
 
-  it('shows a headline stat on each visible card', async () => {
+  it('shows the live river level on the card', async () => {
     const stream = await renderToReadableStream(<HomePage />);
     const html = await new Response(stream).text();
-    expect(html).toContain('23.3 million');
+    expect(html).toContain('0.07 m');
   });
 });

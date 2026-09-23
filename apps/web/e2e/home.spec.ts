@@ -9,15 +9,15 @@ test.describe('home', () => {
     // (the site may be served under a base path).
     await page.goto('./');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-    await expect(page.getByRole('link', { name: /national animal is in freefall/i })).toHaveCount(
-      MICROSITES.length,
-    );
+    await expect(
+      page.getByRole('link', { name: /more gauges than any other river in England/i }),
+    ).toHaveCount(MICROSITES.length);
   });
 
   test('@critical opens a microsite story from its card', async ({ page }) => {
     await page.goto('./');
-    await page.getByRole('link', { name: /national animal is in freefall/i }).click();
-    await expect(page.getByRole('img', { name: /sheep numbers/i })).toBeVisible();
+    await page.getByRole('link', { name: /more gauges than any other river in England/i }).click();
+    await expect(page.getByRole('img', { name: /rivers by number of gauges/i })).toBeVisible();
     await expect(page.getByText('Sources and further reading')).toBeVisible();
   });
 
@@ -27,13 +27,19 @@ test.describe('home', () => {
     expect(results.violations).toEqual([]);
   });
 
-  test('@smoke shows a plausible live sheep count', async ({ page }) => {
-    await page.goto('./agriculture/sheep-index');
-    const latest = await page.getAttribute('[data-testid="sheep-latest"]', 'data-value');
+  test('@smoke shows a plausible live river level', async ({ page }) => {
+    await page.goto('./environment/gauge-index');
+    const latest = await page.getAttribute('[data-testid="gauge-live-level"]', 'data-value');
     expect(latest).not.toBeNull();
-    const sheep = Number(latest);
-    expect(Number.isFinite(sheep)).toBe(true);
-    expect(sheep).toBeGreaterThan(20000000);
-    expect(sheep).toBeLessThan(27000000);
+    const level = Number(latest);
+    expect(Number.isFinite(level)).toBe(true);
+    expect(level).toBeGreaterThan(-2);
+    expect(level).toBeLessThan(3);
+  });
+
+  test('@smoke counts the gauges in the sample', async ({ page }) => {
+    await page.goto('./environment/gauge-index');
+    const count = await page.getAttribute('[data-testid="gauge-stations"]', 'data-value');
+    expect(Number(count)).toBeGreaterThan(1000);
   });
 });

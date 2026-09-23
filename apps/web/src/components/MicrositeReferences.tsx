@@ -1,4 +1,4 @@
-export type ReferenceKind = 'news' | 'history' | 'culture' | 'data';
+export type ReferenceKind = 'news' | 'history' | 'culture' | 'data' | 'licence';
 
 export interface MicrositeReference {
   label: string;
@@ -11,6 +11,7 @@ const KIND_LABELS: Record<ReferenceKind, string> = {
   history: 'History',
   culture: 'Culture',
   data: 'Data',
+  licence: 'Licence',
 };
 
 interface MicrositeReferencesProps {

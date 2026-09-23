@@ -5,7 +5,7 @@ import ErrorPage from './error';
 
 describe('ErrorPage', () => {
   it('renders a generic message and never leaks the raw error message', async () => {
-    const error = new Error('Stats NZ request to https://api.example/stats failed: 401');
+    const error = new Error('flood-monitoring: HTTP 503 listing stations');
     const stream = await renderToReadableStream(<ErrorPage error={error} reset={vi.fn()} />);
     const html = await new Response(stream).text();
 
