@@ -53,8 +53,8 @@ export default function AboutPage(): React.ReactElement {
           <h2 className="numeral-heading-lg">The gauge index</h2>
           <p className="numeral-paragraph-md">
             The first experiment counts the Environment Agency river gauges and asks which rivers
-            carry the most. The River Thames leads with 55 stations out of the 2,095 in the sample,
-            across 808 named rivers.
+            carry the most. The River Thames leads with 55 stations across 808 named rivers, and the
+            sample runs to a few thousand gauges in all.
           </p>
           <p className="numeral-paragraph-md">
             The station list and the live water level come from the agency flood-monitoring API,

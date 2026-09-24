@@ -51,6 +51,27 @@ test.describe('home', () => {
     expect(Number(count)).toBeGreaterThan(200);
   });
 
+  test('@smoke counts the docking stations in the cycle hire list', async ({ page }) => {
+    await page.goto('./transport/cycle-hire-docks');
+    const stations = await page.getAttribute('[data-testid="cycle-hire-stations"]', 'data-value');
+    expect(Number(stations)).toBeGreaterThan(500);
+    const points = await page.getAttribute(
+      '[data-testid="cycle-hire-docking-points"]',
+      'data-value',
+    );
+    expect(Number(points)).toBeGreaterThan(10000);
+  });
+
+  test('@smoke draws the cycle hire dot plot', async ({ page }) => {
+    await page.goto('./transport/cycle-hire-docks');
+    await expect(
+      page.getByRole('img', { name: /docking stations by number of docking points/i }),
+    ).toBeVisible();
+    await expect(
+      page.locator('summary', { hasText: 'View the dock sizes as a table' }),
+    ).toBeVisible();
+  });
+
   test('@smoke counts the establishments on the food hygiene registers', async ({ page }) => {
     await page.goto('./health/food-hygiene-registers');
     const count = await page.getAttribute(

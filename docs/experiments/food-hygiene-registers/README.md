@@ -5,7 +5,7 @@
 Every food business in the UK sits on a register kept by its local council, and
 the Food Standards Agency publishes the whole set in one call. Birmingham's
 register is the largest at 10,239 establishments, and the 363 registers between
-them hold 612,721. Scotland runs a separate scheme, which is why 32 of those
+them hold 612,772. Scotland runs a separate scheme, which is why 32 of those
 registers look different from the other 331.
 
 ## Data source
@@ -30,8 +30,10 @@ Two fields need reading with care, and the page says so:
 
 **alive**: the counts come from a live call at every deploy, the endpoint is
 keyless, and repeated calls in the same day return the same totals. The prose
-numbers (363, 612,721, 10,239) are re-checked against a fresh call on each loop
-iteration.
+numbers (363, 612,772, 10,239) are re-checked against a fresh call on each loop
+iteration. The register count and Birmingham's figure have held steady; the
+establishment total drifts upward as premises are added (612,721 on 24
+September, 612,772 on 25 September).
 
 ## What it looks like
 

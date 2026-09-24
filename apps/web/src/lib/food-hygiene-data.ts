@@ -22,9 +22,11 @@ const FSA_SNAPSHOT_PATH = path.join(
 /** Fetches the register list with the build-time timeout and version header, or throws. */
 async function fetchAuthoritiesJson(url: string): Promise<unknown> {
   const response = await globalThis.fetch(url, {
-    // The page promises the numbers the source returns on the build day, so
-    // never let Next's fetch cache serve a response from an earlier build.
-    cache: 'no-store',
+    // A one second cache window keeps each build reading the source. The
+    // obvious `cache: 'no-store'` is not usable: it marks the fetch dynamic,
+    // and the static export refuses to prerender a route that makes one, which
+    // silently pushed every story onto its committed snapshot.
+    next: { revalidate: 1 },
     headers: { [FSA_API_VERSION_HEADER]: FSA_API_VERSION },
     signal: AbortSignal.timeout(FSA_LIVE_PROBE_TIMEOUT_MS),
   });

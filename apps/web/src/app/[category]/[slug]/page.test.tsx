@@ -22,6 +22,44 @@ vi.mock('next/navigation', () => ({
   },
 }));
 
+vi.mock('@/lib/cycle-hire-data', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/cycle-hire-data')>();
+  return {
+    ...actual,
+    fetchCycleHireIndex: vi.fn().mockResolvedValue({
+      stationCount: 798,
+      dockCount: 20992,
+      bikeCount: 8492,
+      electricBikeCount: 967,
+      sizeBuckets: [
+        { dockCount: 10, stationCount: 1 },
+        { dockCount: 24, stationCount: 3 },
+        { dockCount: 63, stationCount: 1 },
+      ],
+      largestStations: [
+        {
+          id: 'BikePoints_532',
+          name: 'Jubilee Plaza, Canary Wharf',
+          dockCount: 63,
+          bikeCount: 37,
+          electricBikeCount: 1,
+          emptyDockCount: 26,
+          temporary: false,
+        },
+        {
+          id: 'BikePoints_193',
+          name: 'Bankside Mix, Bankside',
+          dockCount: 60,
+          bikeCount: 5,
+          electricBikeCount: 0,
+          emptyDockCount: 55,
+          temporary: false,
+        },
+      ],
+    }),
+  };
+});
+
 vi.mock('@/lib/gauge-data', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/lib/gauge-data')>();
   return {
@@ -103,7 +141,7 @@ describe('MicrositePage', () => {
     );
     const html = await new Response(stream).text();
     expect(html).toContain('more gauges than any other river in England');
-    expect(html).toContain('Thirty-nine stations');
+    expect(html).toContain('The agency marks some stations as closed or suspended');
     expect(html).toContain('Key facts');
     expect(html).toContain('How to read this chart');
     expect(html).toContain('Open source data');
@@ -246,6 +284,51 @@ describe('MicrositePage', () => {
         title: 'Food hygiene registers - uk-data-lab',
         description: expect.any(String),
         url: '/health/food-hygiene-registers/',
+        type: 'article',
+      },
+    });
+  });
+
+  it('renders the cycle hire story with narrative, chart, and sources', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('cycle-hire-docks'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain('798 cycle hire docks hold space for 20 to 39 bikes');
+    expect(html).toContain('A docking point is the fixed part of the network');
+    expect(html).toContain('Key facts');
+    expect(html).toContain('How to read this chart');
+    expect(html).toContain('Sources and further reading');
+    expect(html).toContain('BikePoint docking station API');
+    expect(html).toContain('TfL open data terms and licences');
+    expect(html).toContain('href="/transport"');
+    expect(html).toContain('Cycle hire docks');
+    expect(html.match(/<h1[^>]*>/g) ?? []).toHaveLength(1);
+  });
+
+  it('reads the headline numbers out of the fetched docking stations', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('cycle-hire-docks'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain('data-testid="cycle-hire-stations" data-value="798"');
+    expect(html).toContain('data-testid="cycle-hire-docking-points" data-value="20992"');
+    expect(html).toContain('data-testid="cycle-hire-largest-station" data-value="63"');
+    expect(html).toContain('View the dock sizes as a table');
+    expect(html).toContain('Jubilee Plaza, Canary Wharf');
+    expect(html).toContain('>20,992<');
+  });
+
+  it('returns a unique document title for the cycle hire microsite', async () => {
+    await expect(
+      generateMetadata({ params: Promise.resolve(paramsFor('cycle-hire-docks')) }),
+    ).resolves.toEqual({
+      title: 'Cycle hire docks - uk-data-lab',
+      description: expect.any(String),
+      openGraph: {
+        title: 'Cycle hire docks - uk-data-lab',
+        description: expect.any(String),
+        url: '/transport/cycle-hire-docks/',
         type: 'article',
       },
     });

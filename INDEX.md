@@ -5,7 +5,7 @@ A map of this repo for anyone (or any agent) arriving cold.
 ## The site
 
 `uk-data-lab` is a static Next.js export of small experiments on UK public
-data. Two microsites are published. The home page is
+data. Four microsites are published. The home page is
 (`apps/web/src/app/page.tsx`), and each story lives at
 `/<category-slug>/<slug>/`.
 
@@ -15,6 +15,12 @@ data. Two microsites are published. The home page is
 - [ons-dataset-catalogue](docs/experiments/ons-dataset-catalogue) (alive) The
   ONS beta API lists 338 datasets, and 310 of them carry a 2023 or 2024
   last-updated stamp.
+- [food-hygiene-registers](docs/experiments/food-hygiene-registers) (alive)
+  Birmingham lists 10,239 food outlets, the largest of the FSA's 363 local
+  authority registers.
+- [cycle-hire-docks](docs/experiments/cycle-hire-docks) (alive) Transport for
+  London lists 798 Santander Cycles docking stations holding 20,992 docking
+  points.
 
 ## Where things are
 
@@ -24,6 +30,10 @@ data. Two microsites are published. The home page is
   gauge story. Live read at build time, committed snapshot as fallback.
 - `apps/web/src/lib/ons-catalogue-data.ts` - the same shape for the ONS
   catalogue story.
+- `apps/web/src/lib/food-hygiene-data.ts` - the same shape for the food hygiene
+  registers story.
+- `apps/web/src/lib/cycle-hire-data.ts` - the same shape for the cycle hire
+  docks story.
 - `apps/web/src/components/` - chart and page components, each with unit tests.
 - `packages/uk-sources/` - the vendored connectors package. Never edit by hand;
   run `node scripts/sync-connectors.mjs`.

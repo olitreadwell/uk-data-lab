@@ -6,4 +6,5 @@ export const PUBLISHED_MICROSITES: readonly string[] = [
   'gauge-index',
   'ons-dataset-catalogue',
   'food-hygiene-registers',
+  'cycle-hire-docks',
 ];

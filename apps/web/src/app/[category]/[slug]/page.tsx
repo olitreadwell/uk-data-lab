@@ -3,12 +3,14 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { CycleHireDocksChart } from '@/components/CycleHireDocksChart';
 import { FoodHygieneRegistersChart } from '@/components/FoodHygieneRegistersChart';
 import { GaugeRiversChart } from '@/components/GaugeRiversChart';
 import { MicrositeStory } from '@/components/MicrositeStory';
 import { OnsCatalogueChart } from '@/components/OnsCatalogueChart';
 import { ReportIssueButton } from '@/components/ReportIssueButton';
 import { StatCard } from '@/components/StatCard';
+import { fetchCycleHireIndex } from '@/lib/cycle-hire-data';
 import { fetchFoodHygieneSummary } from '@/lib/food-hygiene-data';
 import {
   buildGaugeStationIndex,
@@ -19,6 +21,8 @@ import {
 } from '@/lib/gauge-data';
 import {
   categorySlugFor,
+  fillStoryDataNote,
+  formatBuildDate,
   freshnessLabelFor,
   micrositePathFor,
   MICROSITES,
@@ -144,6 +148,9 @@ interface StoryContent {
  * @returns the chart, stat cards, and source note for the page
  */
 async function renderStoryContent(slug: string, dataNote: string): Promise<StoryContent> {
+  // Every story states its build-day totals in the source note, so the note is
+  // filled from the same read the chart draws rather than kept as static text.
+  const buildDate = formatBuildDate();
   switch (slug) {
     case 'gauge-index': {
       const stations = await fetchGaugeStationSample();
@@ -181,7 +188,10 @@ async function renderStoryContent(slug: string, dataNote: string): Promise<Story
             />
           </dl>
         ),
-        dataNote,
+        dataNote: fillStoryDataNote(dataNote, {
+          stationCount: formatCount(index.stationCount),
+          asOf: buildDate,
+        }),
       };
     }
     case 'ons-dataset-catalogue': {
@@ -214,7 +224,10 @@ async function renderStoryContent(slug: string, dataNote: string): Promise<Story
             />
           </dl>
         ),
-        dataNote,
+        dataNote: fillStoryDataNote(dataNote, {
+          datasetCount: formatCount(catalogue.datasetCount),
+          asOf: buildDate,
+        }),
       };
     }
     case 'food-hygiene-registers': {
@@ -255,7 +268,52 @@ async function renderStoryContent(slug: string, dataNote: string): Promise<Story
             />
           </dl>
         ),
-        dataNote,
+        dataNote: fillStoryDataNote(dataNote, {
+          registerCount: formatCount(summary.authorityCount),
+          establishmentCount: formatCount(summary.establishmentCount),
+          asOf: buildDate,
+        }),
+      };
+    }
+    case 'cycle-hire-docks': {
+      const index = await fetchCycleHireIndex();
+      const largestStation = index.largestStations[0];
+      return {
+        chart: (
+          <CycleHireDocksChart buckets={index.sizeBuckets} stationCount={index.stationCount} />
+        ),
+        stats: (
+          <dl className="grid gap-6 py-[var(--spacing-2xl)] sm:grid-cols-3">
+            <StatCard
+              label="Docking stations"
+              value={formatCount(index.stationCount)}
+              accent="sky"
+              testId="cycle-hire-stations"
+              dataValue={index.stationCount}
+            />
+            <StatCard
+              label="Docking points"
+              value={formatCount(index.dockCount)}
+              accent="sky"
+              testId="cycle-hire-docking-points"
+              dataValue={index.dockCount}
+            />
+            <StatCard
+              label={largestStation === undefined ? 'Largest station' : largestStation.name}
+              value={
+                largestStation === undefined ? 'No data' : formatCount(largestStation.dockCount)
+              }
+              accent="sky"
+              testId="cycle-hire-largest-station"
+              dataValue={largestStation?.dockCount}
+            />
+          </dl>
+        ),
+        dataNote: fillStoryDataNote(dataNote, {
+          stationCount: formatCount(index.stationCount),
+          dockCount: formatCount(index.dockCount),
+          asOf: buildDate,
+        }),
       };
     }
     default:

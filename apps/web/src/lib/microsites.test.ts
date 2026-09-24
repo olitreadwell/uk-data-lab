@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 
 import {
   CATEGORY_DETAILS,
+  fillStoryDataNote,
+  formatBuildDate,
   freshnessLabelFor,
   micrositePathFor,
   MICROSITES,
@@ -73,5 +75,41 @@ describe('freshnessLabelFor', () => {
       throw new Error('gauge-index missing');
     }
     expect(freshnessLabelFor(fetched)).toContain('deploy time');
+  });
+});
+
+describe('fillStoryDataNote', () => {
+  it('replaces every placeholder with the build-time value', () => {
+    const note = 'The call returned {stationCount} stations on {asOf}.';
+    expect(fillStoryDataNote(note, { stationCount: '2,093', asOf: '25 September 2026' })).toBe(
+      'The call returned 2,093 stations on 25 September 2026.',
+    );
+  });
+
+  it('replaces a placeholder that appears more than once', () => {
+    expect(fillStoryDataNote('{n} of {n}', { n: '338' })).toBe('338 of 338');
+  });
+
+  it('leaves a note with no placeholders alone', () => {
+    expect(fillStoryDataNote('Data: a keyless API.', {})).toBe('Data: a keyless API.');
+  });
+
+  it('gives every published story a note with its moving totals filled in', () => {
+    for (const microsite of MICROSITES) {
+      expect(microsite.dataNote, microsite.slug).toContain('{asOf}');
+      for (const token of ['{stationCount}', '{registerCount}', '{datasetCount}', '{dockCount}']) {
+        expect(microsite.dataNote.includes(token), `${microsite.slug} ${token}`).toBe(
+          token === '{stationCount}'
+            ? ['gauge-index', 'cycle-hire-docks'].includes(microsite.slug)
+            : microsite.dataNote.includes(token),
+        );
+      }
+    }
+  });
+});
+
+describe('formatBuildDate', () => {
+  it('writes the build day in long form', () => {
+    expect(formatBuildDate(new Date('2026-09-25T09:00:00Z'))).toBe('25 September 2026');
   });
 });

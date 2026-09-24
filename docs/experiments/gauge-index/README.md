@@ -10,7 +10,7 @@ and the River Thames comes out on top with 55.
 
 Environment Agency flood-monitoring API, `/id/stations`, fetched at deploy time
 via `@uklab/uk-sources`. The endpoint caps its response, so `_limit=3000`
-returns 2,095 rows rather than the whole network. River names are counted as the
+returns a few thousand rows rather than the whole network. River names are counted as the
 agency publishes them, which is why "Tide" appears second without being a river.
 
 The live level comes from Bourton Dickler on the River Dikler, which publishes
