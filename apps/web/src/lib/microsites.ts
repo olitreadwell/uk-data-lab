@@ -337,9 +337,9 @@ export const MICROSITES: MicrositeConfig[] = withHiddenMicrositesRemoved<Microsi
     slug: 'cycle-hire-docks',
     keyFacts: [
       'Jubilee Plaza at Canary Wharf: 63 docking points, the largest station in London.',
-      '798 docking stations hold 20,992 docking points between them.',
-      '182 stations hold fewer than 20 docking points, 551 hold between 20 and 39, and two hold 60 or more.',
+      'Most of the 798 stations hold between 20 and 39 docking points, and two hold 60 or more.',
       'A docking point is the space a bike locks into, not the bike parked in it.',
+      'TfL takes docking points out of service through the day, so the network total moves between builds.',
     ],
     howToRead:
       'Each dot is one docking station, stacked at the number of docking points it holds; taller stacks mean more stations of that size.',
@@ -348,11 +348,11 @@ export const MICROSITES: MicrositeConfig[] = withHiddenMicrositesRemoved<Microsi
     eyebrow: 'the cycle hire docks',
     title: "Most of London's 798 cycle hire docks hold space for 20 to 39 bikes.",
     description:
-      'Transport for London lists 798 Santander Cycles docking stations holding 20,992 docking points. Jubilee Plaza at Canary Wharf is the biggest at 63, and only one other station holds 60 or more.',
+      'Transport for London lists 798 Santander Cycles docking stations. Most of them hold space for 20 to 39 bikes, and the largest, Jubilee Plaza at Canary Wharf, holds 63.',
     paragraphs: [
       'A docking point is the fixed part of the network: the post a bike locks into. TfL reports the docked bikes and the empty docks in the same call, and both move through the day, so the docking points are what the shape of the network is measured in.',
-      'Most stations are small. 551 of the 798 hold between 20 and 39 docking points, and 182 hold fewer than 20. Two hold 60 or more, both on the busy side of central London: Jubilee Plaza at Canary Wharf with 63 and Bankside Mix with 60.',
-      'The smallest station is Royal Avenue 2 in Chelsea with 10 docking points, a sixth of the size of the biggest. TfL counts electric bikes in the same list, so the bikes docked at a station split into standard and electric.',
+      'Most stations are small. The 20 to 39 band covers more than two thirds of them, and only two stations hold 60 or more: Jubilee Plaza at Canary Wharf with 63 and Bankside Mix with 60.',
+      'Capacity moves as well as bikes. A station taken out of service reports no docking points until it comes back, and the network total follows it down and up, so the exact totals on this page are the ones the list carried on the build day. TfL counts electric bikes in the same list, so the bikes docked at a station split into standard and electric.',
     ],
     accent: 'sky',
     dataSource: 'Transport for London',
