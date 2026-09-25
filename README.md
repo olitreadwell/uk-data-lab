@@ -9,15 +9,15 @@ deployed static chart.
 
 - **The gauge index**: the Environment Agency's flood-monitoring list runs to
   thousands of stations across England. The River Thames carries 55 of them,
-  more than any other river, and eight stations report rainfall. Data from the agency
-  flood-monitoring API, fetched at deploy time under the Open Government
-  Licence v3.0.
+  more than any other river, and nearly every station publishes water level
+  rather than rainfall. Data from the agency flood-monitoring API, fetched at
+  deploy time under the Open Government Licence v3.0.
 - **The ONS catalogue**: the ONS beta API lists 338 dataset records, 310 of them
   stamped 2023 or 2024 and 281 flagged as national statistics. Data from the
   ONS beta API, fetched at deploy time under the Open Government Licence v3.0.
 - **The food hygiene registers**: the Food Standards Agency lists 363 local
-  authority food hygiene registers holding 612,772 establishments, with
-  Birmingham's 10,239 at the top. Data from the FSA Food Hygiene Rating Scheme
+  authority food hygiene registers holding more than 612,000 establishments,
+  with Birmingham's 10,239 at the top. Data from the FSA Food Hygiene Rating Scheme
   API, fetched at deploy time under the Open Government Licence v3.0.
 - **The cycle hire docks**: Transport for London lists 798 Santander Cycles
   docking stations holding 20,992 docking points, most of them between 20 and

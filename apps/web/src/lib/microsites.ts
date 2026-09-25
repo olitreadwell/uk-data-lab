@@ -189,8 +189,8 @@ export const MICROSITES: MicrositeConfig[] = withHiddenMicrositesRemoved<Microsi
     keyFacts: [
       'River Thames: 55 gauges, more than any other river in the sample.',
       'The sample spreads across 808 named rivers.',
-      'Rainfall shows up on eight stations, and 89 publish flow.',
-      'Nine stations have no coordinates recorded, all of them groundwater boreholes.',
+      'Water level is what nearly every station publishes; flow, rainfall, wind, and temperature fill in the rest.',
+      'The agency leaves the map position empty on its groundwater boreholes, so those carry no coordinates.',
     ],
     howToRead: 'Longer bars mean more gauges on that river; hover a bar for the exact count.',
     sourceUrl: 'https://environment.data.gov.uk/flood-monitoring/doc/reference',
@@ -201,7 +201,7 @@ export const MICROSITES: MicrositeConfig[] = withHiddenMicrositesRemoved<Microsi
       "The Environment Agency's flood-monitoring list runs to thousands of stations across England. The River Thames holds 55 of them, more than any other river in the sample, and almost all of the network watches water level rather than rain.",
     paragraphs: [
       'The gauges exist to warn people about flooding. Most sit on a river or a stream and take a reading every 15 minutes. Where a station publishes flow as well as level, the flow is worked out from the level rather than measured on its own.',
-      'The agency marks some stations as closed or suspended, and leaves the status field empty on others, so those counts move as the list is edited. Nine stations have no coordinates recorded, all of them groundwater boreholes, because the agency leaves the map position empty for those.',
+      'The agency marks some stations as closed or suspended, and leaves the status field empty on others, so those counts move as the list is edited. The groundwater boreholes carry no coordinates at all, because the agency leaves the map position empty for those.',
       'The agency writes "Tide" in the river field for tidal monitoring sites. That is why it sits second in the chart without being a river.',
     ],
     accent: 'cyan',
