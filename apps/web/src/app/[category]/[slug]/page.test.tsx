@@ -134,6 +134,38 @@ vi.mock('@/lib/food-hygiene-data', async (importOriginal) => {
   };
 });
 
+vi.mock('@/lib/planning-data', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/planning-data')>();
+  return {
+    ...actual,
+    fetchPlanningDatasetSummary: vi.fn().mockResolvedValue({
+      datasetCount: 201,
+      entityCount: 25355887,
+      emptyDatasetCount: 84,
+      largestDatasets: [
+        {
+          dataset: 'title-boundary',
+          name: 'Title boundary',
+          entityCount: 22740586,
+          themes: ['administrative', 'housing'],
+          typology: 'geography',
+          phase: 'beta',
+          licence: 'ogl3',
+        },
+        {
+          dataset: 'flood-risk-zone',
+          name: 'Flood risk zone',
+          entityCount: 780636,
+          themes: ['environment'],
+          typology: 'geography',
+          phase: 'beta',
+          licence: 'ogl3',
+        },
+      ],
+    }),
+  };
+});
+
 describe('MicrositePage', () => {
   it('renders the gauge story with narrative, chart, and sources', async () => {
     const stream = await renderToReadableStream(
@@ -329,6 +361,51 @@ describe('MicrositePage', () => {
         title: 'Cycle hire docks - uk-data-lab',
         description: expect.any(String),
         url: '/transport/cycle-hire-docks/',
+        type: 'article',
+      },
+    });
+  });
+
+  it('renders the planning datasets story with narrative, chart, and sources', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('planning-datasets'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain('nearly nine in ten of the records');
+    expect(html).toContain('The ranking is lopsided');
+    expect(html).toContain('Key facts');
+    expect(html).toContain('How to read this chart');
+    expect(html).toContain('Sources and further reading');
+    expect(html).toContain('Planning Data API documentation');
+    expect(html).toContain('Open Government Licence v3.0');
+    expect(html).toContain('href="/open-data"');
+    expect(html).toContain('Planning datasets');
+    expect(html.match(/<h1[^>]*>/g) ?? []).toHaveLength(1);
+  });
+
+  it('reads the headline numbers out of the fetched dataset catalogue', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('planning-datasets'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain('data-testid="planning-datasets" data-value="201"');
+    expect(html).toContain('data-testid="planning-records" data-value="25355887"');
+    expect(html).toContain('data-testid="planning-largest-dataset" data-value="22740586"');
+    expect(html).toContain('View the largest datasets as a table');
+    expect(html).toContain('Title boundary');
+    expect(html).toContain('>22,740,586<');
+  });
+
+  it('returns a unique document title for the planning datasets microsite', async () => {
+    await expect(
+      generateMetadata({ params: Promise.resolve(paramsFor('planning-datasets')) }),
+    ).resolves.toEqual({
+      title: 'Planning datasets - uk-data-lab',
+      description: expect.any(String),
+      openGraph: {
+        title: 'Planning datasets - uk-data-lab',
+        description: expect.any(String),
+        url: '/open-data/planning-datasets/',
         type: 'article',
       },
     });

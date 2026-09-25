@@ -2,7 +2,7 @@
 
 Example site for
 [uk-open-data-connectors](https://github.com/olitreadwell/uk-open-data-connectors).
-Four microsites showing the full pipeline from a UK public-data connector to a
+Five microsites showing the full pipeline from a UK public-data connector to a
 deployed static chart.
 
 ## The microsites
@@ -23,6 +23,10 @@ deployed static chart.
   docking stations holding 20,992 docking points, most of them between 20 and
   39. Data from the TfL Unified API, fetched at deploy time under TfL Open
   Data.
+- **The planning datasets**: the Planning Data platform lists 201 datasets for
+  England holding 25,355,887 records, and one of them, title boundary, holds
+  nearly nine in ten of them. Data from the platform's dataset catalogue,
+  fetched at deploy time under the Open Government Licence v3.0.
 
 ## What this example shows
 

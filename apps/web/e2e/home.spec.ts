@@ -72,6 +72,14 @@ test.describe('home', () => {
     ).toBeVisible();
   });
 
+  test('@smoke counts the datasets in the planning catalogue', async ({ page }) => {
+    await page.goto('./open-data/planning-datasets');
+    const datasets = await page.getAttribute('[data-testid="planning-datasets"]', 'data-value');
+    expect(Number(datasets)).toBeGreaterThan(100);
+    const records = await page.getAttribute('[data-testid="planning-records"]', 'data-value');
+    expect(Number(records)).toBeGreaterThan(1000000);
+  });
+
   test('@smoke counts the establishments on the food hygiene registers', async ({ page }) => {
     await page.goto('./health/food-hygiene-registers');
     const count = await page.getAttribute(

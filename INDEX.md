@@ -5,7 +5,7 @@ A map of this repo for anyone (or any agent) arriving cold.
 ## The site
 
 `uk-data-lab` is a static Next.js export of small experiments on UK public
-data. Four microsites are published. The home page is
+data. Five microsites are published. The home page is
 (`apps/web/src/app/page.tsx`), and each story lives at
 `/<category-slug>/<slug>/`.
 
@@ -21,6 +21,9 @@ data. Four microsites are published. The home page is
 - [cycle-hire-docks](docs/experiments/cycle-hire-docks) (alive) Transport for
   London lists 798 Santander Cycles docking stations holding 20,992 docking
   points.
+- [planning-datasets](docs/experiments/planning-datasets) (alive) The Planning
+  Data platform lists 201 datasets holding 25,355,887 records, and one of
+  them holds nearly nine in ten of those records.
 
 ## Where things are
 
@@ -34,6 +37,8 @@ data. Four microsites are published. The home page is
   registers story.
 - `apps/web/src/lib/cycle-hire-data.ts` - the same shape for the cycle hire
   docks story.
+- `apps/web/src/lib/planning-data.ts` - the same shape for the planning
+  datasets story.
 - `apps/web/src/components/` - chart and page components, each with unit tests.
 - `packages/uk-sources/` - the vendored connectors package. Never edit by hand;
   run `node scripts/sync-connectors.mjs`.

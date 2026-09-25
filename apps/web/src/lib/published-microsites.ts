@@ -7,4 +7,5 @@ export const PUBLISHED_MICROSITES: readonly string[] = [
   'ons-dataset-catalogue',
   'food-hygiene-registers',
   'cycle-hire-docks',
+  'planning-datasets',
 ];

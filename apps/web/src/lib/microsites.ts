@@ -17,6 +17,7 @@ export type MicrositeDataSource =
   | 'NHS England'
   | 'British Geological Survey'
   | 'Transport for London'
+  | 'Planning Data (MHCLG)'
   | 'OpenStreetMap'
   | 'Wikipedia & Wikidata';
 
@@ -379,6 +380,59 @@ export const MICROSITES: MicrositeConfig[] = withHiddenMicrositesRemoved<Microsi
       {
         label: 'TfL open data terms and licences (Transport for London)',
         url: 'https://tfl.gov.uk/info-for/open-data-users/',
+        kind: 'licence',
+      },
+    ],
+  },
+  {
+    slug: 'planning-datasets',
+    keyFacts: [
+      'More than 200 datasets are listed, each with the number of records behind it.',
+      'Title boundary holds nearly nine in ten of the records; the nine datasets behind it hold about a tenth between them.',
+      'Dozens of the listed datasets hold no records yet, most of them still in alpha.',
+      'A dataset identifier such as listed-building is the same string the API takes in its dataset= parameter.',
+    ],
+    howToRead:
+      'Each bar is one dataset and the line is the running share of all records; a line that jumps on the first bar means one dataset carries most of them.',
+    sourceUrl: 'https://www.planning.data.gov.uk/dataset.json',
+    label: 'Planning datasets',
+    eyebrow: 'the planning datasets',
+    title:
+      "One dataset holds nearly nine in ten of the records on England's planning data platform.",
+    description:
+      'The Planning Data platform lists every planning and housing dataset the government publishes for England, with a record count for each. One dataset, title boundary, holds nearly nine in ten of the records, and dozens of the listed datasets hold none at all.',
+    paragraphs: [
+      'Local councils and government bodies publish planning and housing data, and the platform collects it into one catalogue with a schema per dataset. That catalogue call returns every dataset the platform knows about with the number of records held for each one, so the list doubles as a ranking of what has actually been published.',
+      'The ranking is lopsided. Title boundary, the index polygons HM Land Registry draws around registered titles, holds the great majority of the records on its own. The datasets a reader might expect from a planning platform, conservation areas, listed buildings, flood risk zones, brownfield land, all sit well below it.',
+      'Not every listed dataset holds data yet. Dozens are empty, most of them in alpha while the specification is worked out, and the platform lists them anyway, which keeps the identifier reserved and shows the shape of the data before the records land.',
+    ],
+    accent: 'violet',
+    dataSource: 'Planning Data (MHCLG)',
+    chartType: 'Pareto',
+    category: 'Open data & digital',
+    dataNote:
+      'Data: Planning Data dataset catalogue, /dataset.json, published by the Ministry of Housing, Communities and Local Government under the Open Government Licence v3.0. The call returned {datasetCount} datasets holding {entityCount} records on {asOf}, and {emptyDatasetCount} of those datasets hold no records yet. The file also lists the platform\'s pipeline configuration and provenance tables; the counts here and the chart keep the entries whose realm is "dataset". If the platform is unreachable at build time the page falls back to the committed snapshot in apps/web/src/fixtures/planning-datasets-sample.json and logs that it did.',
+    references: [
+      {
+        label:
+          'Planning Data dataset catalogue (Ministry of Housing, Communities and Local Government)',
+        url: 'https://www.planning.data.gov.uk/dataset.json',
+        kind: 'data',
+      },
+      {
+        label:
+          'Planning Data API documentation (Ministry of Housing, Communities and Local Government)',
+        url: 'https://www.planning.data.gov.uk/docs',
+        kind: 'data',
+      },
+      {
+        label: 'Title boundary dataset (Planning Data)',
+        url: 'https://www.planning.data.gov.uk/dataset/title-boundary',
+        kind: 'data',
+      },
+      {
+        label: 'Open Government Licence v3.0',
+        url: 'https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/',
         kind: 'licence',
       },
     ],

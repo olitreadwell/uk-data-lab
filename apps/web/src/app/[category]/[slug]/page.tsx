@@ -8,6 +8,7 @@ import { FoodHygieneRegistersChart } from '@/components/FoodHygieneRegistersChar
 import { GaugeRiversChart } from '@/components/GaugeRiversChart';
 import { MicrositeStory } from '@/components/MicrositeStory';
 import { OnsCatalogueChart } from '@/components/OnsCatalogueChart';
+import { PlanningDatasetChart } from '@/components/PlanningDatasetChart';
 import { ReportIssueButton } from '@/components/ReportIssueButton';
 import { StatCard } from '@/components/StatCard';
 import { fetchCycleHireIndex } from '@/lib/cycle-hire-data';
@@ -33,6 +34,7 @@ import {
   fetchOnsCatalogueSummary,
   ONS_PEAK_STAMP_YEARS,
 } from '@/lib/ons-catalogue-data';
+import { fetchPlanningDatasetSummary } from '@/lib/planning-data';
 import { formatCount, formatLevelMetres, formatTrendLabel } from '@/lib/uk-format';
 
 interface MicrositePageProps {
@@ -312,6 +314,51 @@ async function renderStoryContent(slug: string, dataNote: string): Promise<Story
         dataNote: fillStoryDataNote(dataNote, {
           stationCount: formatCount(index.stationCount),
           dockCount: formatCount(index.dockCount),
+          asOf: buildDate,
+        }),
+      };
+    }
+    case 'planning-datasets': {
+      const summary = await fetchPlanningDatasetSummary();
+      const largestDataset = summary.largestDatasets[0];
+      return {
+        chart: (
+          <PlanningDatasetChart
+            datasets={summary.largestDatasets}
+            totalEntityCount={summary.entityCount}
+          />
+        ),
+        stats: (
+          <dl className="grid gap-6 py-[var(--spacing-2xl)] sm:grid-cols-3">
+            <StatCard
+              label="Datasets listed"
+              value={formatCount(summary.datasetCount)}
+              accent="violet"
+              testId="planning-datasets"
+              dataValue={summary.datasetCount}
+            />
+            <StatCard
+              label="Records behind them"
+              value={formatCount(summary.entityCount)}
+              accent="violet"
+              testId="planning-records"
+              dataValue={summary.entityCount}
+            />
+            <StatCard
+              label={largestDataset === undefined ? 'Largest dataset' : largestDataset.name}
+              value={
+                largestDataset === undefined ? 'No data' : formatCount(largestDataset.entityCount)
+              }
+              accent="violet"
+              testId="planning-largest-dataset"
+              dataValue={largestDataset?.entityCount}
+            />
+          </dl>
+        ),
+        dataNote: fillStoryDataNote(dataNote, {
+          datasetCount: formatCount(summary.datasetCount),
+          entityCount: formatCount(summary.entityCount),
+          emptyDatasetCount: formatCount(summary.emptyDatasetCount),
           asOf: buildDate,
         }),
       };
