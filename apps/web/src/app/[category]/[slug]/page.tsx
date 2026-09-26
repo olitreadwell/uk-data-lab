@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { AncientWoodlandChart } from '@/components/AncientWoodlandChart';
 import { CycleHireDocksChart } from '@/components/CycleHireDocksChart';
 import { FoodHygieneRegistersChart } from '@/components/FoodHygieneRegistersChart';
 import { GaugeRiversChart } from '@/components/GaugeRiversChart';
@@ -11,6 +12,7 @@ import { OnsCatalogueChart } from '@/components/OnsCatalogueChart';
 import { PlanningDatasetChart } from '@/components/PlanningDatasetChart';
 import { ReportIssueButton } from '@/components/ReportIssueButton';
 import { StatCard } from '@/components/StatCard';
+import { fetchAncientWoodlandProfile } from '@/lib/ancient-woodland-data';
 import { fetchCycleHireIndex } from '@/lib/cycle-hire-data';
 import { fetchFoodHygieneSummary } from '@/lib/food-hygiene-data';
 import {
@@ -359,6 +361,45 @@ async function renderStoryContent(slug: string, dataNote: string): Promise<Story
           datasetCount: formatCount(summary.datasetCount),
           entityCount: formatCount(summary.entityCount),
           emptyDatasetCount: formatCount(summary.emptyDatasetCount),
+          asOf: buildDate,
+        }),
+      };
+    }
+    case 'ancient-woodland': {
+      const woodland = await fetchAncientWoodlandProfile();
+      const smallestBand = woodland.sizeBands[0];
+      const hectareCount = Math.round(woodland.totalHectares);
+      return {
+        chart: <AncientWoodlandChart sizeBands={woodland.sizeBands} />,
+        stats: (
+          <dl className="grid gap-6 py-[var(--spacing-2xl)] sm:grid-cols-3">
+            <StatCard
+              label="Records in the layer"
+              value={formatCount(woodland.recordCount)}
+              accent="emerald"
+              testId="ancient-woodland-records"
+              dataValue={woodland.recordCount}
+            />
+            <StatCard
+              label="Hectares covered"
+              value={formatCount(hectareCount)}
+              accent="emerald"
+              testId="ancient-woodland-hectares"
+              dataValue={hectareCount}
+            />
+            <StatCard
+              label={smallestBand === undefined ? 'Under one hectare' : smallestBand.label}
+              value={smallestBand === undefined ? 'No data' : formatCount(smallestBand.recordCount)}
+              accent="emerald"
+              testId="ancient-woodland-smallest-band"
+              dataValue={smallestBand?.recordCount}
+            />
+          </dl>
+        ),
+        dataNote: fillStoryDataNote(dataNote, {
+          recordCount: formatCount(woodland.recordCount),
+          hectareCount: formatCount(hectareCount),
+          smallWoodCount: formatCount(smallestBand?.recordCount ?? 0),
           asOf: buildDate,
         }),
       };

@@ -8,4 +8,5 @@ export const PUBLISHED_MICROSITES: readonly string[] = [
   'food-hygiene-registers',
   'cycle-hire-docks',
   'planning-datasets',
+  'ancient-woodland',
 ];

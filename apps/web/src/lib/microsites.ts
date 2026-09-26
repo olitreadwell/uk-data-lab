@@ -437,4 +437,63 @@ export const MICROSITES: MicrositeConfig[] = withHiddenMicrositesRemoved<Microsi
       },
     ],
   },
+  {
+    slug: 'ancient-woodland',
+    keyFacts: [
+      '53,638 records cover 365,050 hectares of England.',
+      '14,725 of those records, more than a quarter, cover less than one hectare.',
+      '14,341 records are plantations on ancient woodland sites.',
+      'Planted woods outnumber semi-natural ones in both of the largest size bands.',
+      'The largest single record covers 719 hectares.',
+    ],
+    howToRead:
+      'Each bar is one size band and the colours stacked inside it are the woodland types; the tall bars on the left are the small woods, which make up most of the inventory.',
+    sourceUrl: 'https://naturalengland-defra.opendata.arcgis.com/datasets/ancient-woodland-england',
+    label: 'Ancient woodland',
+    eyebrow: 'the ancient woodland inventory',
+    title:
+      "England's ancient woodland inventory holds 53,638 records, and more than a quarter of them cover less than a hectare.",
+    description:
+      "Natural England's Ancient Woodland Inventory maps land that has been wooded continuously since 1600. The layer holds 53,638 records covering 365,050 hectares, and 14,341 of them are plantations on ancient woodland sites.",
+    paragraphs: [
+      'Ancient woodland is land that has been wooded since at least 1600, which makes it slow to replace: the soils, the fungi, and the plants behind it take centuries to build. Natural England keeps the inventory as a layer of mapped polygons, and the layer counted 53,638 records covering 365,050 hectares on the day this page was built.',
+      'Most of the woods are small. 14,725 records cover less than a hectare, and the 2 to 5 hectare band is the busiest of all at 13,728 records. Only 294 records run to 100 hectares or more, and the largest single record covers 719 hectares against an average of 6.8 hectares across the whole layer.',
+      'The layer splits the woods by type. 39,233 records are ancient semi-natural woodland, which keeps its native tree and shrub cover. 14,341 are plantations on ancient woodland sites, where the original cover was felled and replanted, often with conifers. 64 are ancient wood pasture, grazed ground with veteran trees.',
+      'Planted woods carry more of the big records than intact ones. In the 50 to 100 hectare band they lead 351 to 336, and above 100 hectares they lead 189 to 105. The layer also counts polygons rather than sites, so a wood mapped as several pieces appears more than once in the total.',
+    ],
+    accent: 'emerald',
+    dataSource: 'Natural England',
+    chartType: 'Bar chart',
+    category: 'Biodiversity & nature',
+    dataNote:
+      "Data: Natural England's Ancient Woodland (England) layer, served from the Defra ArcGIS estate under the Open Government Licence v3.0. The layer counted {recordCount} records covering {hectareCount} hectares on {asOf}, and {smallWoodCount} of those records cover less than a hectare. The counts come from the service's own statistics queries, so the page never downloads the polygons. The layer lists records rather than sites: a wood mapped as several polygons appears as several rows, so the count runs above the number of named woods. Natural England's own description of the layer still carries the figures it was published with, 53,637 polygons covering 364,971.81 hectares, which the live counts have moved past. If the layer is unreachable at build time the page falls back to the committed snapshot in apps/web/src/fixtures/ancient-woodland-sample.json and logs that it did.",
+    references: [
+      {
+        label: 'Ancient Woodland (England) layer (Natural England)',
+        url: 'https://naturalengland-defra.opendata.arcgis.com/datasets/ancient-woodland-england',
+        kind: 'data',
+      },
+      {
+        label: 'Natural England open data hub (Defra)',
+        url: 'https://naturalengland-defra.opendata.arcgis.com/',
+        kind: 'data',
+      },
+      {
+        label:
+          'Ancient woodland, ancient trees and veteran trees: advice for making planning decisions (GOV.UK)',
+        url: 'https://www.gov.uk/guidance/ancient-woodland-ancient-trees-and-veteran-trees-advice-for-making-planning-decisions',
+        kind: 'news',
+      },
+      {
+        label: 'Ancient woodland (Woodland Trust)',
+        url: 'https://www.woodlandtrust.org.uk/trees-woods-and-wildlife/habitats/ancient-woodland/',
+        kind: 'news',
+      },
+      {
+        label: 'Open Government Licence v3.0',
+        url: 'https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/',
+        kind: 'licence',
+      },
+    ],
+  },
 ]).filter((microsite) => PUBLISHED_MICROSITES.includes(microsite.slug));

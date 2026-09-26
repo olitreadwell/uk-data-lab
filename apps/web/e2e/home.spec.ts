@@ -88,4 +88,21 @@ test.describe('home', () => {
     );
     expect(Number(count)).toBeGreaterThan(100000);
   });
+
+  test('@smoke counts the records on the ancient woodland layer', async ({ page }) => {
+    await page.goto('./biodiversity/ancient-woodland');
+    const records = await page.getAttribute(
+      '[data-testid="ancient-woodland-records"]',
+      'data-value',
+    );
+    expect(Number(records)).toBeGreaterThan(40000);
+    const hectares = await page.getAttribute(
+      '[data-testid="ancient-woodland-hectares"]',
+      'data-value',
+    );
+    expect(Number(hectares)).toBeGreaterThan(100000);
+    await expect(
+      page.locator('summary', { hasText: 'View the size bands as a table' }),
+    ).toBeVisible();
+  });
 });

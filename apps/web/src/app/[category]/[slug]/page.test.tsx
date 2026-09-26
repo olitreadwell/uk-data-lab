@@ -166,6 +166,37 @@ vi.mock('@/lib/planning-data', async (importOriginal) => {
   };
 });
 
+vi.mock('@/lib/ancient-woodland-data', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/ancient-woodland-data')>();
+  return {
+    ...actual,
+    fetchAncientWoodlandProfile: vi.fn().mockResolvedValue({
+      recordCount: 53638,
+      totalHectares: 365049.84601722023,
+      largestRecordHectares: 719.427161103768,
+      averageRecordHectares: 6.805806443514305,
+      categoryCounts: { asnw: 39233, paws: 14341, awp: 64 },
+      categoryHectares: { asnw: 215100.2, paws: 149811.8, awp: 137.8 },
+      sizeBands: [
+        {
+          label: 'Under 1 hectare',
+          minHectares: 0,
+          maxHectares: 1,
+          recordCount: 14725,
+          categoryCounts: { asnw: 11992, paws: 2701, awp: 32 },
+        },
+        {
+          label: '2 to 5 hectares',
+          minHectares: 2,
+          maxHectares: 5,
+          recordCount: 13728,
+          categoryCounts: { asnw: 9883, paws: 3832, awp: 13 },
+        },
+      ],
+    }),
+  };
+});
+
 describe('MicrositePage', () => {
   it('renders the gauge story with narrative, chart, and sources', async () => {
     const stream = await renderToReadableStream(
@@ -406,6 +437,50 @@ describe('MicrositePage', () => {
         title: 'Planning datasets - uk-data-lab',
         description: expect.any(String),
         url: '/open-data/planning-datasets/',
+        type: 'article',
+      },
+    });
+  });
+
+  it('renders the ancient woodland story copy', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('ancient-woodland'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain('Ancient woodland is land that has been wooded since at least 1600');
+    expect(html).toContain('Key facts');
+    expect(html).toContain('How to read this chart');
+    expect(html).toContain('Sources and further reading');
+    expect(html).toContain('Ancient Woodland (England) layer (Natural England)');
+    expect(html).toContain('Open Government Licence v3.0');
+    expect(html).toContain('href="/biodiversity"');
+    expect(html).toContain('Ancient woodland');
+    expect(html.match(/<h1[^>]*>/g) ?? []).toHaveLength(1);
+  });
+
+  it('reads the headline numbers out of the fetched layer', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('ancient-woodland'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain('data-testid="ancient-woodland-records" data-value="53638"');
+    expect(html).toContain('data-testid="ancient-woodland-hectares" data-value="365050"');
+    expect(html).toContain('data-testid="ancient-woodland-smallest-band" data-value="14725"');
+    expect(html).toContain('View the size bands as a table');
+    expect(html).toContain('Under 1 hectare');
+    expect(html).toContain('>53,638<');
+  });
+
+  it('returns a unique document title for the ancient woodland microsite', async () => {
+    await expect(
+      generateMetadata({ params: Promise.resolve(paramsFor('ancient-woodland')) }),
+    ).resolves.toEqual({
+      title: 'Ancient woodland - uk-data-lab',
+      description: expect.any(String),
+      openGraph: {
+        title: 'Ancient woodland - uk-data-lab',
+        description: expect.any(String),
+        url: '/biodiversity/ancient-woodland/',
         type: 'article',
       },
     });

@@ -80,7 +80,7 @@ export function MicrositeStory({
             <span className="numeral-text-eyebrow text-[var(--color-muted)]">
               How to read this chart
             </span>
-            {` — ${howToRead}`}
+            {`. ${howToRead}`}
           </p>
           {chart}
         </div>
