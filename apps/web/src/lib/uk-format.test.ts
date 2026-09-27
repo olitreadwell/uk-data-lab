@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 
-import { formatCount, formatLevelMetres, formatSignedMetres, formatTrendLabel } from './uk-format';
+import {
+  formatCount,
+  formatIsoDateLong,
+  formatLevelMetres,
+  formatRatePercent,
+  formatSignedMetres,
+  formatTrendLabel,
+} from './uk-format';
 
 describe('formatCount', () => {
   it('adds thousands separators', () => {
@@ -30,5 +37,25 @@ describe('formatTrendLabel', () => {
     expect(formatTrendLabel('falling')).toBe('falling');
     expect(formatTrendLabel('steady')).toBe('steady');
     expect(formatTrendLabel('unknown')).toBe('no direction yet');
+  });
+});
+
+describe('formatRatePercent', () => {
+  it('writes the rate with a per cent sign and no padding', () => {
+    expect(formatRatePercent(3.75)).toBe('3.75%');
+    expect(formatRatePercent(0.1)).toBe('0.1%');
+    expect(formatRatePercent(17)).toBe('17%');
+  });
+
+  it('keeps the decimals a historical rate was set at', () => {
+    expect(formatRatePercent(5.9375)).toBe('5.9375%');
+    expect(formatRatePercent(13.8438)).toBe('13.8438%');
+  });
+});
+
+describe('formatIsoDateLong', () => {
+  it('writes an ISO date out in full', () => {
+    expect(formatIsoDateLong('2026-09-24')).toBe('24 September 2026');
+    expect(formatIsoDateLong('1975-01-02')).toBe('2 January 1975');
   });
 });

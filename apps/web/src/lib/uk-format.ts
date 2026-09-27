@@ -42,3 +42,31 @@ export function formatTrendLabel(trend: 'rising' | 'falling' | 'steady' | 'unkno
       return 'no direction yet';
   }
 }
+
+/**
+ * Formats a percentage rate as the Bank of England publishes it, e.g. "3.75%"
+ * or "0.1%", keeping up to four decimals so a historical rate such as 5.9375%
+ * reads as it was set.
+ *
+ * @param value - the rate in per cent
+ * @returns the rate with a per cent sign
+ */
+export function formatRatePercent(value: number): string {
+  const rate = new Intl.NumberFormat('en-GB', { maximumFractionDigits: 4 }).format(value);
+  return `${rate}%`;
+}
+
+/**
+ * Formats an ISO date as a long UK date, e.g. "24 September 2026".
+ *
+ * @param isoDate - the date as YYYY-MM-DD
+ * @returns the same day written out in full
+ */
+export function formatIsoDateLong(isoDate: string): string {
+  return new Intl.DateTimeFormat('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(`${isoDate}T00:00:00Z`));
+}

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { AncientWoodlandChart } from '@/components/AncientWoodlandChart';
+import { BankRateChart } from '@/components/BankRateChart';
 import { CycleHireDocksChart } from '@/components/CycleHireDocksChart';
 import { FoodHygieneRegistersChart } from '@/components/FoodHygieneRegistersChart';
 import { GaugeRiversChart } from '@/components/GaugeRiversChart';
@@ -13,6 +14,7 @@ import { PlanningDatasetChart } from '@/components/PlanningDatasetChart';
 import { ReportIssueButton } from '@/components/ReportIssueButton';
 import { StatCard } from '@/components/StatCard';
 import { fetchAncientWoodlandProfile } from '@/lib/ancient-woodland-data';
+import { fetchBankRateSummary } from '@/lib/bank-rate-data';
 import { fetchCycleHireIndex } from '@/lib/cycle-hire-data';
 import { fetchFoodHygieneSummary } from '@/lib/food-hygiene-data';
 import {
@@ -37,7 +39,13 @@ import {
   ONS_PEAK_STAMP_YEARS,
 } from '@/lib/ons-catalogue-data';
 import { fetchPlanningDatasetSummary } from '@/lib/planning-data';
-import { formatCount, formatLevelMetres, formatTrendLabel } from '@/lib/uk-format';
+import {
+  formatCount,
+  formatIsoDateLong,
+  formatLevelMetres,
+  formatRatePercent,
+  formatTrendLabel,
+} from '@/lib/uk-format';
 
 interface MicrositePageProps {
   params: Promise<{ category: string; slug: string }>;
@@ -400,6 +408,46 @@ async function renderStoryContent(slug: string, dataNote: string): Promise<Story
           recordCount: formatCount(woodland.recordCount),
           hectareCount: formatCount(hectareCount),
           smallWoodCount: formatCount(smallestBand?.recordCount ?? 0),
+          asOf: buildDate,
+        }),
+      };
+    }
+    case 'bank-rate': {
+      const series = await fetchBankRateSummary();
+      const latest = series.latestObservation;
+      const runCount = series.spells.length;
+      return {
+        chart: <BankRateChart spells={series.spells} latestDate={latest.date} />,
+        stats: (
+          <dl className="grid gap-6 py-[var(--spacing-2xl)] sm:grid-cols-3">
+            <StatCard
+              label="Newest reading"
+              value={formatRatePercent(latest.ratePercent)}
+              accent="indigo"
+              testId="bank-rate-latest"
+              dataValue={latest.ratePercent}
+            />
+            <StatCard
+              label={`Days at ${formatRatePercent(series.longestSpell.ratePercent)}`}
+              value={formatCount(series.longestSpell.dayCount)}
+              accent="indigo"
+              testId="bank-rate-longest-hold"
+              dataValue={series.longestSpell.dayCount}
+            />
+            <StatCard
+              label="Readings in the series"
+              value={formatCount(series.observationCount)}
+              accent="indigo"
+              testId="bank-rate-readings"
+              dataValue={series.observationCount}
+            />
+          </dl>
+        ),
+        dataNote: fillStoryDataNote(dataNote, {
+          observationCount: formatCount(series.observationCount),
+          latestDate: formatIsoDateLong(latest.date),
+          spellCount: formatCount(runCount),
+          levelCount: formatCount(series.levelCount),
           asOf: buildDate,
         }),
       };

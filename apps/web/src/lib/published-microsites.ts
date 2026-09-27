@@ -9,4 +9,5 @@ export const PUBLISHED_MICROSITES: readonly string[] = [
   'cycle-hire-docks',
   'planning-datasets',
   'ancient-woodland',
+  'bank-rate',
 ];

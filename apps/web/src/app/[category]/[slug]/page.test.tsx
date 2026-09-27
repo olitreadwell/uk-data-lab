@@ -166,6 +166,42 @@ vi.mock('@/lib/planning-data', async (importOriginal) => {
   };
 });
 
+vi.mock('@/lib/bank-rate-data', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/bank-rate-data')>();
+  return {
+    ...actual,
+    fetchBankRateSummary: vi.fn().mockResolvedValue({
+      observationCount: 13077,
+      changeCount: 258,
+      levelCount: 114,
+      firstObservation: { date: '1975-01-02', ratePercent: 11.5 },
+      latestObservation: { date: '2026-09-24', ratePercent: 3.75 },
+      highestSpell: {
+        startDate: '1979-11-15',
+        endDate: '1980-07-02',
+        ratePercent: 17,
+        dayCount: 231,
+      },
+      lowestSpell: {
+        startDate: '2020-03-19',
+        endDate: '2021-12-15',
+        ratePercent: 0.1,
+        dayCount: 637,
+      },
+      longestSpell: {
+        startDate: '2009-03-05',
+        endDate: '2016-08-03',
+        ratePercent: 0.5,
+        dayCount: 2709,
+      },
+      spells: [
+        { startDate: '1975-01-02', endDate: '1975-01-17', ratePercent: 11.5, dayCount: 16 },
+        { startDate: '2009-03-05', endDate: '2016-08-03', ratePercent: 0.5, dayCount: 2709 },
+      ],
+    }),
+  };
+});
+
 vi.mock('@/lib/ancient-woodland-data', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/lib/ancient-woodland-data')>();
   return {
@@ -469,6 +505,59 @@ describe('MicrositePage', () => {
     expect(html).toContain('View the size bands as a table');
     expect(html).toContain('Under 1 hectare');
     expect(html).toContain('>53,638<');
+  });
+
+  it('renders the Bank Rate story copy', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('bank-rate'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain('Bank Rate held 0.5% for 2,709 days');
+    expect(html).toContain('The database writes one row per business day');
+    expect(html).toContain('Key facts');
+    expect(html).toContain('How to read this chart');
+    expect(html).toContain('Sources and further reading');
+    expect(html).toContain('Interactive Statistical Database (Bank of England)');
+    expect(html).toContain('Terms and conditions (Bank of England)');
+    expect(html).toContain('href="/economy"');
+    expect(html).toContain('Bank Rate');
+    expect(html.match(/<h1[^>]*>/g) ?? []).toHaveLength(1);
+  });
+
+  it('reads the headline numbers out of the fetched series', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('bank-rate'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain('data-testid="bank-rate-latest" data-value="3.75"');
+    expect(html).toContain('data-testid="bank-rate-longest-hold" data-value="2709"');
+    expect(html).toContain('data-testid="bank-rate-readings" data-value="13077"');
+    expect(html).toContain('View the runs at each level as a table');
+    expect(html).toContain('2 January 1975');
+  });
+
+  it('fills the Bank Rate source note from the series it fetched', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('bank-rate'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain('13,077 daily readings running to 24 September 2026');
+    expect(html).toContain('in 2 runs at 114 levels');
+  });
+
+  it('returns a unique document title for the Bank Rate microsite', async () => {
+    await expect(
+      generateMetadata({ params: Promise.resolve(paramsFor('bank-rate')) }),
+    ).resolves.toEqual({
+      title: 'Bank Rate - uk-data-lab',
+      description: expect.any(String),
+      openGraph: {
+        title: 'Bank Rate - uk-data-lab',
+        description: expect.any(String),
+        url: '/economy/bank-rate/',
+        type: 'article',
+      },
+    });
   });
 
   it('returns a unique document title for the ancient woodland microsite', async () => {

@@ -19,7 +19,8 @@ export type MicrositeDataSource =
   | 'Transport for London'
   | 'Planning Data (MHCLG)'
   | 'OpenStreetMap'
-  | 'Wikipedia & Wikidata';
+  | 'Wikipedia & Wikidata'
+  | 'Bank of England';
 
 /** The main visualisation used by a microsite story. */
 export type MicrositeChartType =
@@ -492,6 +493,57 @@ export const MICROSITES: MicrositeConfig[] = withHiddenMicrositesRemoved<Microsi
       {
         label: 'Open Government Licence v3.0',
         url: 'https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/',
+        kind: 'licence',
+      },
+    ],
+  },
+  {
+    slug: 'bank-rate',
+    keyFacts: [
+      'The series starts on 2 January 1975 at 11.5% and runs to the last business day the database held on the build day.',
+      'The highest level is 17%, held for 231 days from 15 November 1979.',
+      'The lowest is 0.1%, held for 637 days from 19 March 2020.',
+      'The longest unbroken hold is 2,709 days at 0.5%, from 5 March 2009 to 3 August 2016.',
+    ],
+    howToRead:
+      'The line steps between levels instead of sliding, so each flat run is one hold; hover a step for the dates it covers and how many days it lasted.',
+    sourceUrl: 'https://www.bankofengland.co.uk/boeapps/database/',
+    label: 'Bank Rate',
+    eyebrow: 'the bank rate series',
+    title: 'Bank Rate held 0.5% for 2,709 days, the longest run in its 51-year history.',
+    description:
+      'The Bank of England keeps a Bank Rate reading for every business day since 2 January 1975, when it stood at 11.5%. The rate peaked at 17% in November 1979, fell to 0.1% in March 2020, and its longest unbroken hold is the 2,709 days it spent at 0.5%.',
+    paragraphs: [
+      'Bank Rate is the interest rate the Bank of England sets, and the database keeps a reading for every business day. The rate that stands on a day is the one set most recently, so the series reads as long flat holds broken by decisions.',
+      'It began at 11.5% in January 1975 and climbed to 17% in November 1979, which is still the highest it has been. That 17% lasted 231 days, and the rate did not fall back below 10% until October 1982.',
+      'The lowest points came much later. The rate sat at 0.5% for 2,709 days from March 2009 to August 2016, the longest hold in the series, and it fell to 0.1% in March 2020 for 637 days.',
+      'The database writes one row per business day, so the chart jumps from Friday to Monday and skips bank holidays. The day counts here are calendar days, weekends included.',
+    ],
+    accent: 'indigo',
+    dataSource: 'Bank of England',
+    chartType: 'Line chart',
+    category: 'Economy & business',
+    dataNote:
+      "Data: Bank of England Interactive Statistical Database, series IUDBEDR (official Bank Rate, daily), read from https://www.bankofengland.co.uk/boeapps/database/_iadb-fromshowcolumns.asp. The database returned {observationCount} daily readings running to {latestDate} on {asOf}, in {spellCount} runs at {levelCount} levels. It writes one row per business day, carrying the level recorded for that day, so a rate announced and withdrawn inside one day has no step of its own: the September 1992 rise to 15% is one example. The Bank's terms place reproduction of Database data under the Open Government Licence v3.0. If the database is unreachable at build time the page falls back to the committed snapshot in apps/web/src/fixtures/bank-rate-sample.csv and logs that it did.",
+    references: [
+      {
+        label: 'Interactive Statistical Database (Bank of England)',
+        url: 'https://www.bankofengland.co.uk/boeapps/database/',
+        kind: 'data',
+      },
+      {
+        label: 'The interest rate Bank Rate (Bank of England)',
+        url: 'https://www.bankofengland.co.uk/monetary-policy/the-interest-rate-bank-rate',
+        kind: 'data',
+      },
+      {
+        label: 'Bank of England statistics (Bank of England)',
+        url: 'https://www.bankofengland.co.uk/statistics',
+        kind: 'data',
+      },
+      {
+        label: 'Terms and conditions (Bank of England)',
+        url: 'https://www.bankofengland.co.uk/legal',
         kind: 'licence',
       },
     ],

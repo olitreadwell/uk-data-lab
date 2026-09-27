@@ -89,6 +89,21 @@ test.describe('home', () => {
     expect(Number(count)).toBeGreaterThan(100000);
   });
 
+  test('@smoke reads the Bank Rate series and draws its step chart', async ({ page }) => {
+    await page.goto('./economy/bank-rate');
+    const readings = await page.getAttribute('[data-testid="bank-rate-readings"]', 'data-value');
+    expect(Number(readings)).toBeGreaterThan(10000);
+    const hold = await page.getAttribute('[data-testid="bank-rate-longest-hold"]', 'data-value');
+    expect(Number(hold)).toBeGreaterThan(2000);
+    const latest = await page.getAttribute('[data-testid="bank-rate-latest"]', 'data-value');
+    expect(Number(latest)).toBeGreaterThan(1);
+    expect(Number(latest)).toBeLessThan(20);
+    await expect(page.getByRole('img', { name: /Bank Rate by business day/ })).toBeVisible();
+    await expect(
+      page.locator('summary', { hasText: 'View the runs at each level as a table' }),
+    ).toBeVisible();
+  });
+
   test('@smoke counts the records on the ancient woodland layer', async ({ page }) => {
     await page.goto('./biodiversity/ancient-woodland');
     const records = await page.getAttribute(
