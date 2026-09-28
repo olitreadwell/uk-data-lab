@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest';
 import {
   formatCount,
   formatIsoDateLong,
+  formatIsoMonthLong,
+  formatIsoMonthShort,
   formatLevelMetres,
   formatRatePercent,
   formatSignedMetres,
@@ -57,5 +59,19 @@ describe('formatIsoDateLong', () => {
   it('writes an ISO date out in full', () => {
     expect(formatIsoDateLong('2026-09-24')).toBe('24 September 2026');
     expect(formatIsoDateLong('1975-01-02')).toBe('2 January 1975');
+  });
+});
+
+describe('formatIsoMonthShort', () => {
+  it('writes a published month short', () => {
+    expect(formatIsoMonthShort('2026-07')).toBe('Jul 2026');
+    expect(formatIsoMonthShort('2025-12')).toBe('Dec 2025');
+  });
+});
+
+describe('formatIsoMonthLong', () => {
+  it('writes a published month out in full', () => {
+    expect(formatIsoMonthLong('2026-07')).toBe('July 2026');
+    expect(formatIsoMonthLong('2025-06')).toBe('June 2025');
   });
 });

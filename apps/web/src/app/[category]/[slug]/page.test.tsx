@@ -233,6 +233,63 @@ vi.mock('@/lib/ancient-woodland-data', async (importOriginal) => {
   };
 });
 
+vi.mock('@/lib/police-crime-data', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/police-crime-data')>();
+  return {
+    ...actual,
+    fetchRecordedCrimeSummary: vi.fn().mockResolvedValue({
+      monthCount: 12,
+      recordCount: 17835,
+      firstMonth: '2025-08',
+      latestMonth: '2026-07',
+      categoryCounts: [
+        { slug: 'violent-crime', name: 'Violence and sexual offences', recordCount: 4942 },
+        { slug: 'shoplifting', name: 'Shoplifting', recordCount: 3311 },
+        { slug: 'other-theft', name: 'Other theft', recordCount: 1586 },
+        { slug: 'anti-social-behaviour', name: 'Anti-social behaviour', recordCount: 1496 },
+        { slug: 'public-order', name: 'Public order', recordCount: 1461 },
+        { slug: 'drugs', name: 'Drugs', recordCount: 964 },
+        { slug: 'possession-of-weapons', name: 'Possession of weapons', recordCount: 193 },
+      ],
+      outcomeCounts: [
+        { outcome: 'Investigation complete; no suspect identified', recordCount: 7866 },
+        { outcome: 'Unable to prosecute suspect', recordCount: 3046 },
+        { outcome: 'Under investigation', recordCount: 1778 },
+        { outcome: null, recordCount: 1496 },
+      ],
+      months: [
+        {
+          month: '2026-06',
+          recordCount: 1452,
+          categoryCounts: [
+            { slug: 'violent-crime', name: 'Violence and sexual offences', recordCount: 403 },
+            { slug: 'shoplifting', name: 'Shoplifting', recordCount: 317 },
+          ],
+        },
+        {
+          month: '2026-07',
+          recordCount: 1417,
+          categoryCounts: [
+            { slug: 'violent-crime', name: 'Violence and sexual offences', recordCount: 419 },
+            { slug: 'shoplifting', name: 'Shoplifting', recordCount: 297 },
+          ],
+        },
+      ],
+      busiestMonth: { month: '2025-10', recordCount: 1691, categoryCounts: [] },
+      quietestMonth: { month: '2026-02', recordCount: 1314, categoryCounts: [] },
+      topCategory: {
+        slug: 'violent-crime',
+        name: 'Violence and sexual offences',
+        recordCount: 4942,
+      },
+      topOutcome: {
+        outcome: 'Investigation complete; no suspect identified',
+        recordCount: 7866,
+      },
+    }),
+  };
+});
+
 describe('MicrositePage', () => {
   it('renders the gauge story with narrative, chart, and sources', async () => {
     const stream = await renderToReadableStream(
@@ -570,6 +627,61 @@ describe('MicrositePage', () => {
         title: 'Ancient woodland - uk-data-lab',
         description: expect.any(String),
         url: '/biodiversity/ancient-woodland/',
+        type: 'article',
+      },
+    });
+  });
+
+  it('renders the recorded crime story copy', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('recorded-crime'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain('in every month of the last year');
+    expect(html).toContain('Nothing about that edge follows a ward, a postcode, or a police area');
+    expect(html).toContain('Key facts');
+    expect(html).toContain('How to read this chart');
+    expect(html).toContain('Sources and further reading');
+    expect(html).toContain('Police API documentation (data.police.uk)');
+    expect(html).toContain('Open Government Licence v3.0');
+    expect(html).toContain('href="/society"');
+    expect(html).toContain('Recorded crime');
+    expect(html.match(/<h1[^>]*>/g) ?? []).toHaveLength(1);
+  });
+
+  it('reads the headline numbers out of the fetched window', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('recorded-crime'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain('data-testid="recorded-crime-offences" data-value="17835"');
+    expect(html).toContain('data-testid="recorded-crime-leading-type" data-value="4942"');
+    expect(html).toContain('data-testid="recorded-crime-no-suspect" data-value="7866"');
+    expect(html).toContain('View the crime types as a table');
+    expect(html).toContain('Shoplifting');
+    expect(html).toContain('>3,311<');
+  });
+
+  it('fills the recorded crime source note from the window it fetched', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('recorded-crime'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain(
+      '17,835 offences within a mile of 53.7997, -1.5492 across the 12 published months from August 2025 to July 2026',
+    );
+  });
+
+  it('returns a unique document title for the recorded crime microsite', async () => {
+    await expect(
+      generateMetadata({ params: Promise.resolve(paramsFor('recorded-crime')) }),
+    ).resolves.toEqual({
+      title: 'Recorded crime - uk-data-lab',
+      description: expect.any(String),
+      openGraph: {
+        title: 'Recorded crime - uk-data-lab',
+        description: expect.any(String),
+        url: '/society/recorded-crime/',
         type: 'article',
       },
     });

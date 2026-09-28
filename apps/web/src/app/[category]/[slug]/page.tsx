@@ -11,6 +11,7 @@ import { GaugeRiversChart } from '@/components/GaugeRiversChart';
 import { MicrositeStory } from '@/components/MicrositeStory';
 import { OnsCatalogueChart } from '@/components/OnsCatalogueChart';
 import { PlanningDatasetChart } from '@/components/PlanningDatasetChart';
+import { PoliceCrimeChart } from '@/components/PoliceCrimeChart';
 import { ReportIssueButton } from '@/components/ReportIssueButton';
 import { StatCard } from '@/components/StatCard';
 import { fetchAncientWoodlandProfile } from '@/lib/ancient-woodland-data';
@@ -40,8 +41,14 @@ import {
 } from '@/lib/ons-catalogue-data';
 import { fetchPlanningDatasetSummary } from '@/lib/planning-data';
 import {
+  fetchRecordedCrimeSummary,
+  NO_SUSPECT_OUTCOME,
+  RECORDED_CRIME_LOCATION,
+} from '@/lib/police-crime-data';
+import {
   formatCount,
   formatIsoDateLong,
+  formatIsoMonthLong,
   formatLevelMetres,
   formatRatePercent,
   formatTrendLabel,
@@ -448,6 +455,54 @@ async function renderStoryContent(slug: string, dataNote: string): Promise<Story
           latestDate: formatIsoDateLong(latest.date),
           spellCount: formatCount(runCount),
           levelCount: formatCount(series.levelCount),
+          asOf: buildDate,
+        }),
+      };
+    }
+    case 'recorded-crime': {
+      const summary = await fetchRecordedCrimeSummary();
+      const topCategory = summary.topCategory;
+      const noSuspect = summary.outcomeCounts.find(
+        (outcome) => outcome.outcome === NO_SUSPECT_OUTCOME,
+      );
+      return {
+        chart: (
+          <PoliceCrimeChart
+            months={summary.months}
+            categoryCounts={summary.categoryCounts}
+            locationLabel={RECORDED_CRIME_LOCATION.label}
+          />
+        ),
+        stats: (
+          <dl className="grid gap-6 py-[var(--spacing-2xl)] sm:grid-cols-3">
+            <StatCard
+              label={`Offences around ${RECORDED_CRIME_LOCATION.label}`}
+              value={formatCount(summary.recordCount)}
+              accent="rose"
+              testId="recorded-crime-offences"
+              dataValue={summary.recordCount}
+            />
+            <StatCard
+              label={topCategory.name}
+              value={formatCount(topCategory.recordCount)}
+              accent="rose"
+              testId="recorded-crime-leading-type"
+              dataValue={topCategory.recordCount}
+            />
+            <StatCard
+              label="Closed with no suspect identified"
+              value={formatCount(noSuspect?.recordCount ?? 0)}
+              accent="rose"
+              testId="recorded-crime-no-suspect"
+              dataValue={noSuspect?.recordCount}
+            />
+          </dl>
+        ),
+        dataNote: fillStoryDataNote(dataNote, {
+          recordCount: formatCount(summary.recordCount),
+          monthCount: String(summary.monthCount),
+          firstMonth: formatIsoMonthLong(summary.firstMonth),
+          latestMonth: formatIsoMonthLong(summary.latestMonth),
           asOf: buildDate,
         }),
       };

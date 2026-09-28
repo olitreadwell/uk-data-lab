@@ -20,7 +20,8 @@ export type MicrositeDataSource =
   | 'Planning Data (MHCLG)'
   | 'OpenStreetMap'
   | 'Wikipedia & Wikidata'
-  | 'Bank of England';
+  | 'Bank of England'
+  | 'Home Office';
 
 /** The main visualisation used by a microsite story. */
 export type MicrositeChartType =
@@ -544,6 +545,59 @@ export const MICROSITES: MicrositeConfig[] = withHiddenMicrositesRemoved<Microsi
       {
         label: 'Terms and conditions (Bank of England)',
         url: 'https://www.bankofengland.co.uk/legal',
+        kind: 'licence',
+      },
+    ],
+  },
+  {
+    slug: 'recorded-crime',
+    keyFacts: [
+      'The API holds the last 36 months of street-level crime, published by the 44 forces of England, Wales and Northern Ireland. Police Scotland publishes elsewhere.',
+      'A call answers for everything within a mile of the point it is given, so the window is a circle around one point rather than a boundary on a map.',
+      'Violence and sexual offences is the biggest crime type in every month of the window, with shoplifting second in every month.',
+      'An offence carries the outcome recorded against it so far, so the newest month is still full of open investigations.',
+      'The five biggest crime types fill most of every column; the other nine share the rest.',
+    ],
+    howToRead:
+      'Each column is one published month and the colours stacked inside it are the crime types; the same two bands run through every column, so the mix stays steady while the monthly totals move.',
+    sourceUrl: 'https://data.police.uk/',
+    label: 'Recorded crime',
+    eyebrow: 'the recorded crime series',
+    title:
+      'Violence and shoplifting are the two biggest crime types recorded in a mile of Leeds city centre, in every month of the last year.',
+    description:
+      'The Home Office publishes street-level crime month by month, with the crime type and the outcome recorded for each offence. Within a mile of one point in Leeds city centre, violence and sexual offences has led every month of the last year, with shoplifting second in every one.',
+    paragraphs: [
+      'The police.uk API holds the last 36 months of street-level crime, published one month at a time by the 44 forces of England, Wales and Northern Ireland. Police Scotland publishes its own figures elsewhere, so nothing here covers Scotland.',
+      'A call takes a point and returns every offence recorded within a mile of it, which is why this window is a circle rather than a boundary drawn on a map. Nothing about that edge follows a ward, a postcode, or a police area: it is drawn around a single point.',
+      'The mix stays steady. Violence and sexual offences leads every month in the window and shoplifting follows in every one, and between them they hold a little under half of the offences recorded.',
+      'Each offence carries the outcome recorded against it so far. The biggest single outcome in the window is an investigation that closed with no suspect identified, and the newest month is still full of cases that are open, so its outcome mix will keep changing for months.',
+    ],
+    accent: 'rose',
+    dataSource: 'Home Office',
+    chartType: 'Bar chart',
+    category: 'Society & community',
+    dataNote:
+      'Data: Home Office police.uk recorded crime, /crimes-street/all-crime, published under the Open Government Licence v3.0. The call returned {recordCount} offences within a mile of 53.7997, -1.5492 across the {monthCount} published months from {firstMonth} to {latestMonth} on {asOf}. Every offence carries the crime type the force filed it under and the outcome recorded against it so far; open investigations in a recent month resolve into a final outcome later, so the outcome counts keep moving after a month is published. Coverage is England, Wales and Northern Ireland: Police Scotland publishes elsewhere. If the API is unreachable at build time the page falls back to the committed snapshot in apps/web/src/fixtures/police-recorded-crime-sample.json and logs that it did.',
+    references: [
+      {
+        label: 'Police API documentation (data.police.uk)',
+        url: 'https://data.police.uk/docs/',
+        kind: 'data',
+      },
+      {
+        label: 'Recorded crime coverage, licence, and provenance (data.police.uk)',
+        url: 'https://data.police.uk/about/',
+        kind: 'data',
+      },
+      {
+        label: 'Recorded crime downloads (data.police.uk)',
+        url: 'https://data.police.uk/data/',
+        kind: 'data',
+      },
+      {
+        label: 'Open Government Licence v3.0',
+        url: 'https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/',
         kind: 'licence',
       },
     ],

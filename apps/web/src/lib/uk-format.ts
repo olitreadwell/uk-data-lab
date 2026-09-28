@@ -70,3 +70,31 @@ export function formatIsoDateLong(isoDate: string): string {
     timeZone: 'UTC',
   }).format(new Date(`${isoDate}T00:00:00Z`));
 }
+
+/**
+ * Formats a published month as a short UK label, e.g. "2026-07" to "Jul 2026".
+ *
+ * @param isoMonth - the month as YYYY-MM
+ * @returns the same month written short, read in UTC
+ */
+export function formatIsoMonthShort(isoMonth: string): string {
+  return new Intl.DateTimeFormat('en-GB', {
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(`${isoMonth}-01T00:00:00Z`));
+}
+
+/**
+ * Formats a published month as a long UK label, e.g. "2026-07" to "July 2026".
+ *
+ * @param isoMonth - the month as YYYY-MM
+ * @returns the same month written out in full, read in UTC
+ */
+export function formatIsoMonthLong(isoMonth: string): string {
+  return new Intl.DateTimeFormat('en-GB', {
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(`${isoMonth}-01T00:00:00Z`));
+}

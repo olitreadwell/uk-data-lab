@@ -120,4 +120,24 @@ test.describe('home', () => {
       page.locator('summary', { hasText: 'View the size bands as a table' }),
     ).toBeVisible();
   });
+
+  test('@smoke counts the offences recorded around Leeds city centre', async ({ page }) => {
+    await page.goto('./society/recorded-crime');
+    const offences = await page.getAttribute(
+      '[data-testid="recorded-crime-offences"]',
+      'data-value',
+    );
+    expect(Number(offences)).toBeGreaterThan(5000);
+    const leading = await page.getAttribute(
+      '[data-testid="recorded-crime-leading-type"]',
+      'data-value',
+    );
+    expect(Number(leading)).toBeGreaterThan(1000);
+    await expect(
+      page.getByRole('img', { name: /Recorded crime within a mile of Leeds city centre/ }),
+    ).toBeVisible();
+    await expect(
+      page.locator('summary', { hasText: 'View the crime types as a table' }),
+    ).toBeVisible();
+  });
 });
