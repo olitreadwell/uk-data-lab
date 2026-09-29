@@ -1,10 +1,12 @@
 import { Container } from '@uklab/ui';
+import type { CarbonIntensityIndex } from '@uklab/uk-sources';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { AncientWoodlandChart } from '@/components/AncientWoodlandChart';
 import { BankRateChart } from '@/components/BankRateChart';
+import { CarbonIntensityHeatmap } from '@/components/CarbonIntensityHeatmap';
 import { CycleHireDocksChart } from '@/components/CycleHireDocksChart';
 import { FoodHygieneRegistersChart } from '@/components/FoodHygieneRegistersChart';
 import { GaugeRiversChart } from '@/components/GaugeRiversChart';
@@ -16,6 +18,13 @@ import { ReportIssueButton } from '@/components/ReportIssueButton';
 import { StatCard } from '@/components/StatCard';
 import { fetchAncientWoodlandProfile } from '@/lib/ancient-woodland-data';
 import { fetchBankRateSummary } from '@/lib/bank-rate-data';
+import {
+  buildCarbonIntensityDays,
+  buildCarbonIntensitySlotProfile,
+  cleanestSlot,
+  dirtiestSlot,
+  fetchCarbonIntensitySummary,
+} from '@/lib/carbon-intensity-data';
 import { fetchCycleHireIndex } from '@/lib/cycle-hire-data';
 import { fetchFoodHygieneSummary } from '@/lib/food-hygiene-data';
 import {
@@ -503,6 +512,83 @@ async function renderStoryContent(slug: string, dataNote: string): Promise<Story
           monthCount: String(summary.monthCount),
           firstMonth: formatIsoMonthLong(summary.firstMonth),
           latestMonth: formatIsoMonthLong(summary.latestMonth),
+          asOf: buildDate,
+        }),
+      };
+    }
+    case 'carbon-intensity': {
+      const window = await fetchCarbonIntensitySummary();
+      const days = buildCarbonIntensityDays(window);
+      const profile = buildCarbonIntensitySlotProfile(window);
+      const cleanest = cleanestSlot(profile);
+      const dirtiest = dirtiestSlot(profile);
+      const lastReadingDay = days.at(-1);
+      const bandCount = (index: CarbonIntensityIndex): number =>
+        window.bandCounts.find((band) => band.index === index)?.periodCount ?? 0;
+      return {
+        chart: (
+          <CarbonIntensityHeatmap
+            days={days}
+            profile={profile}
+            summary={{
+              periodCount: window.periodCount,
+              averageIntensity: window.averageIntensity,
+              lowestIntensity: window.lowestPeriod.intensity,
+              highestIntensity: window.highestPeriod.intensity,
+              bandCounts: window.bandCounts,
+            }}
+          />
+        ),
+        stats: (
+          <dl className="grid gap-6 py-[var(--spacing-2xl)] sm:grid-cols-3">
+            <StatCard
+              label="Average across the window"
+              value={`${formatCount(window.averageIntensity)} gCO2/kWh`}
+              accent="lime"
+              testId="carbon-intensity-average"
+              dataValue={window.averageIntensity}
+            />
+            <StatCard
+              label={
+                cleanest === undefined
+                  ? 'Cleanest half hour'
+                  : `Cleanest half hour (${cleanest.label})`
+              }
+              value={`${formatCount(cleanest?.averageIntensity ?? 0)} gCO2/kWh`}
+              accent="lime"
+              testId="carbon-intensity-cleanest"
+              dataValue={cleanest?.averageIntensity}
+            />
+            <StatCard
+              label={
+                dirtiest === undefined
+                  ? 'Dirtiest half hour'
+                  : `Dirtiest half hour (${dirtiest.label})`
+              }
+              value={`${formatCount(dirtiest?.averageIntensity ?? 0)} gCO2/kWh`}
+              accent="lime"
+              testId="carbon-intensity-dirtiest"
+              dataValue={dirtiest?.averageIntensity}
+            />
+          </dl>
+        ),
+        dataNote: fillStoryDataNote(dataNote, {
+          periodCount: formatCount(window.periodCount),
+          dayCount: String(days.length),
+          lastReadingDate:
+            lastReadingDay === undefined ? '' : formatIsoDateLong(lastReadingDay.date),
+          averageIntensity: formatCount(window.averageIntensity),
+          cleanestSlot: cleanest?.label ?? '',
+          cleanestAverage: formatCount(cleanest?.averageIntensity ?? 0),
+          dirtiestSlot: dirtiest?.label ?? '',
+          dirtiestAverage: formatCount(dirtiest?.averageIntensity ?? 0),
+          veryLowCount: formatCount(bandCount('very low')),
+          lowCount: formatCount(bandCount('low')),
+          moderateCount: formatCount(bandCount('moderate')),
+          highCount: formatCount(bandCount('high')),
+          veryHighCount: formatCount(bandCount('very high')),
+          lowestIntensity: formatCount(window.lowestPeriod.intensity),
+          highestIntensity: formatCount(window.highestPeriod.intensity),
           asOf: buildDate,
         }),
       };

@@ -21,7 +21,8 @@ export type MicrositeDataSource =
   | 'OpenStreetMap'
   | 'Wikipedia & Wikidata'
   | 'Bank of England'
-  | 'Home Office';
+  | 'Home Office'
+  | 'Carbon Intensity (NESO)';
 
 /** The main visualisation used by a microsite story. */
 export type MicrositeChartType =
@@ -598,6 +599,58 @@ export const MICROSITES: MicrositeConfig[] = withHiddenMicrositesRemoved<Microsi
       {
         label: 'Open Government Licence v3.0',
         url: 'https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/',
+        kind: 'licence',
+      },
+    ],
+  },
+  {
+    slug: 'carbon-intensity',
+    keyFacts: [
+      'One reading every half hour, 48 a day, day and night.',
+      "Every reading carries the operator's own grade, from very low to very high, and the chart colours each half hour with it.",
+      'The dark band runs down the evening peak, when demand is high and the sun has gone.',
+      'The window stops at the last complete day, so nothing the page draws is a forecast.',
+    ],
+    howToRead:
+      'Each row is one UK day and each column one half hour, coloured by the grade the operator gave that reading; the pale band is where the grid ran cleanest.',
+    sourceUrl: 'https://api.carbonintensity.org.uk/intensity',
+    label: 'Carbon intensity',
+    eyebrow: 'the grid carbon intensity',
+    title:
+      "Britain's grid reports a carbon intensity reading every half hour, and the evening peak is the dirtiest stretch of the day.",
+    description:
+      "The National Energy System Operator grades the British electricity grid's carbon intensity every half hour, from very low to very high. This page draws the last 30 days of it: a reading every half hour, each one coloured by the grade the operator gave it.",
+    paragraphs: [
+      'Carbon intensity is the weight of carbon dioxide behind a kilowatt hour of electricity, in grams. The operator works it out from the fuels feeding the grid over that half hour, so the number moves as the mix moves and the grade moves with it.',
+      'The series is a daily shape. Demand climbs through the morning and peaks in the early evening, and the darkest cells sit in that peak; the cleanest stretch comes somewhere else in the day, where output is high against demand.',
+      'Every reading on the page is a settled one. The window stops at the last complete day rather than reaching into the forecast that the API also publishes, so nothing here is a prediction.',
+      'The series covers the grid of Great Britain, which is the system the operator runs. Northern Ireland runs its own grid, so nothing on this page covers it.',
+    ],
+    accent: 'lime',
+    dataSource: 'Carbon Intensity (NESO)',
+    chartType: 'Heatmap',
+    category: 'Energy & climate',
+    dataNote:
+      "Data: the Carbon Intensity API for Great Britain, run by the National Energy System Operator, read keyless from https://api.carbonintensity.org.uk/intensity. The call returned {periodCount} half-hour readings across {dayCount} complete UK days to {lastReadingDate}, read on {asOf}, averaging {averageIntensity} gCO2/kWh. The cleanest half hour of the day was {cleanestSlot} at {cleanestAverage} gCO2/kWh on average and the dirtiest {dirtiestSlot} at {dirtiestAverage}, both in UK local time. The operator graded {veryLowCount} half hours very low, {lowCount} low, {moderateCount} moderate, {highCount} high and {veryHighCount} very high, and the single readings ran from {lowestIntensity} to {highestIntensity} gCO2/kWh. Each reading is the operator's estimate of the actual mix over that half hour rather than a meter reading, and the series covers Great Britain rather than the whole UK. The API's terms place the data under the Creative Commons Attribution 4.0 licence. If the API is unreachable at build time the page falls back to the committed snapshot in apps/web/src/fixtures/carbon-intensity-sample.json and logs that it did.",
+    references: [
+      {
+        label: 'Carbon Intensity API (National Energy System Operator)',
+        url: 'https://api.carbonintensity.org.uk/intensity',
+        kind: 'data',
+      },
+      {
+        label: 'Carbon Intensity API documentation (National Energy System Operator)',
+        url: 'https://docs.carbonintensity.org.uk/',
+        kind: 'data',
+      },
+      {
+        label: 'Carbon Intensity API terms of use (National Energy System Operator)',
+        url: 'https://terms.carbonintensity.org.uk/',
+        kind: 'licence',
+      },
+      {
+        label: 'Creative Commons Attribution 4.0 International',
+        url: 'https://creativecommons.org/licenses/by/4.0/',
         kind: 'licence',
       },
     ],

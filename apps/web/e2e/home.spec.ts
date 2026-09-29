@@ -140,4 +140,29 @@ test.describe('home', () => {
       page.locator('summary', { hasText: 'View the crime types as a table' }),
     ).toBeVisible();
   });
+
+  test('@smoke reads the carbon intensity window and draws its heatmap', async ({ page }) => {
+    await page.goto('./energy/carbon-intensity');
+    const average = await page.getAttribute(
+      '[data-testid="carbon-intensity-average"]',
+      'data-value',
+    );
+    expect(Number(average)).toBeGreaterThan(20);
+    expect(Number(average)).toBeLessThan(400);
+    const cleanest = await page.getAttribute(
+      '[data-testid="carbon-intensity-cleanest"]',
+      'data-value',
+    );
+    const dirtiest = await page.getAttribute(
+      '[data-testid="carbon-intensity-dirtiest"]',
+      'data-value',
+    );
+    expect(Number(cleanest)).toBeLessThan(Number(dirtiest));
+    await expect(
+      page.getByRole('img', { name: /Half-hourly carbon intensity for Great Britain/ }),
+    ).toBeVisible();
+    await expect(
+      page.locator('summary', { hasText: 'View the half hours as a table' }),
+    ).toBeVisible();
+  });
 });

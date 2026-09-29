@@ -58,6 +58,10 @@ export default async function HomePage(): Promise<React.ReactElement> {
     };
   });
 
+  // The line under the heading states how many sources the site reads, so it
+  // cannot go stale the way a hand-written list of sources does.
+  const dataSourceCount = new Set(galleryCards.map((card) => card.dataSource)).size;
+
   return (
     <>
       <Container size="wide">
@@ -66,10 +70,9 @@ export default async function HomePage(): Promise<React.ReactElement> {
             Small experiments digging through UK public data for the funny and the surprising.
           </h1>
           <p className="numeral-paragraph-lg text-[var(--color-muted)]">
-            {galleryCards.length} live microsite{galleryCards.length === 1 ? '' : 's'}. Source data
-            read at deploy time from keyless APIs under the Open Government Licence: Environment
-            Agency river gauges, the ONS dataset catalogue, the FSA food hygiene registers, TfL's
-            cycle hire docks, and the Planning Data platform's dataset catalogue.
+            {galleryCards.length} live microsite{galleryCards.length === 1 ? '' : 's'}. Every figure
+            comes from a keyless public API read at deploy time, across {dataSourceCount} UK data
+            sources; each story lists its own source and licence.
           </p>
         </Stack>
         <div className="pb-[var(--spacing-3xl)]">

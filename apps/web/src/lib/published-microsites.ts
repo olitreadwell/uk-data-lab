@@ -11,4 +11,5 @@ export const PUBLISHED_MICROSITES: readonly string[] = [
   'ancient-woodland',
   'bank-rate',
   'recorded-crime',
+  'carbon-intensity',
 ];
