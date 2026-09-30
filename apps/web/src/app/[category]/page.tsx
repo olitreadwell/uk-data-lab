@@ -1,4 +1,4 @@
-import { Container, Stack } from '@uklab/ui';
+import { Container, Stack } from '@uk-lab/ui';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 

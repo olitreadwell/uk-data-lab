@@ -1,6 +1,6 @@
 'use client';
 
-import type { PoliceCategoryCount, PoliceMonthCount } from '@uklab/uk-sources';
+import type { PoliceCategoryCount, PoliceMonthCount } from '@uk-lab/uk-sources';
 import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import type { TooltipContentProps } from 'recharts';
 

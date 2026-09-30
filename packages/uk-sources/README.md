@@ -1,11 +1,11 @@
-# @nzlab/uk-sources
+# @uk-lab/uk-sources
 
 Uniform TypeScript adapters for UK public data sources. Every adapter has the
 same shape: a live fetch, a strict parse, and a committed fixture fallback so
 builds work offline.
 
 The package scope is still `@nzlab` because the rest of this repo is a
-scaffold of the NZ connectors repo. Renaming every scope to `@uklab` is a
+scaffold of the NZ connectors repo. Renaming every scope to `@uk-lab` is a
 separate change.
 
 ## Adapters
@@ -95,11 +95,11 @@ import {
   fetchAncientWoodlandProfile,
   fetchFloodStationReadings,
   summarizeFloodReadings,
-} from '@nzlab/uk-sources';
-import { fetchOnsDatasets, summarizeOnsDatasets } from '@nzlab/uk-sources';
-import { fetchFoodHygieneAuthorities, summarizeFoodHygieneAuthorities } from '@nzlab/uk-sources';
-import { fetchTflBikePoints, summarizeTflBikePoints } from '@nzlab/uk-sources';
-import { fetchCarbonIntensityWindow } from '@nzlab/uk-sources';
+} from '@uk-lab/uk-sources';
+import { fetchOnsDatasets, summarizeOnsDatasets } from '@uk-lab/uk-sources';
+import { fetchFoodHygieneAuthorities, summarizeFoodHygieneAuthorities } from '@uk-lab/uk-sources';
+import { fetchTflBikePoints, summarizeTflBikePoints } from '@uk-lab/uk-sources';
+import { fetchCarbonIntensityWindow } from '@uk-lab/uk-sources';
 
 const readings = await fetchFloodStationReadings('1029TH', { limit: 96 });
 const summary = summarizeFloodReadings(readings);
@@ -129,6 +129,6 @@ console.log(intensity.periodCount, intensity.averageIntensity, intensity.lowestP
 Unit tests run against the committed fixtures in `src/fixtures`, offline.
 
 ```bash
-npm run test --workspace @nzlab/uk-sources
-npm run test:smoke --workspace @nzlab/uk-sources   # hits the live APIs
+npm run test --workspace @uk-lab/uk-sources
+npm run test:smoke --workspace @uk-lab/uk-sources   # hits the live APIs
 ```

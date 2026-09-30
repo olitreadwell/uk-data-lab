@@ -1,4 +1,4 @@
-import { parseFoodHygieneAuthorities, summarizeFoodHygieneAuthorities } from '@uklab/uk-sources';
+import { parseFoodHygieneAuthorities, summarizeFoodHygieneAuthorities } from '@uk-lab/uk-sources';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';

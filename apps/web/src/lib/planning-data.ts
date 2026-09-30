@@ -2,8 +2,8 @@ import {
   parsePlanningDatasets,
   PLANNING_DATASETS_URL,
   summarizePlanningDatasets,
-} from '@uklab/uk-sources';
-import type { PlanningDatasetSummary } from '@uklab/uk-sources';
+} from '@uk-lab/uk-sources';
+import type { PlanningDatasetSummary } from '@uk-lab/uk-sources';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 

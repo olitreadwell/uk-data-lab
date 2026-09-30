@@ -1,6 +1,6 @@
 'use client';
 
-import type { AncientWoodlandSizeBand } from '@uklab/uk-sources';
+import type { AncientWoodlandSizeBand } from '@uk-lab/uk-sources';
 import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import type { TooltipContentProps } from 'recharts';
 
