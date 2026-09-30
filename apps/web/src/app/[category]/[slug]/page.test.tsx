@@ -290,6 +290,81 @@ vi.mock('@/lib/police-crime-data', async (importOriginal) => {
   };
 });
 
+vi.mock('@/lib/parliament-seats-data', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/parliament-seats-data')>();
+  return {
+    ...actual,
+    fetchParliamentSeatSummary: vi.fn().mockResolvedValue({
+      seatCount: 650,
+      partyCount: 18,
+      majorityThreshold: 326,
+      partiesWithOneSeat: 6,
+      largestParty: {
+        party: {
+          id: 15,
+          name: 'Labour',
+          abbreviation: 'Lab',
+          backgroundColour: 'd50000',
+          foregroundColour: 'ffffff',
+          isIndependent: false,
+        },
+        seatCount: 403,
+        maleCount: 215,
+        femaleCount: 188,
+        nonBinaryCount: 0,
+        unallocatedSeatCount: 0,
+      },
+      seats: [
+        {
+          party: {
+            id: 15,
+            name: 'Labour',
+            abbreviation: 'Lab',
+            backgroundColour: 'd50000',
+            foregroundColour: 'ffffff',
+            isIndependent: false,
+          },
+          seatCount: 403,
+          maleCount: 215,
+          femaleCount: 188,
+          nonBinaryCount: 0,
+          unallocatedSeatCount: 0,
+        },
+        {
+          party: {
+            id: 4,
+            name: 'Conservative',
+            abbreviation: 'Con',
+            backgroundColour: '0063ba',
+            foregroundColour: 'ffffff',
+            isIndependent: false,
+          },
+          seatCount: 118,
+          maleCount: 90,
+          femaleCount: 28,
+          nonBinaryCount: 0,
+          unallocatedSeatCount: 0,
+        },
+        {
+          party: {
+            id: 1,
+            name: 'Speaker',
+            abbreviation: 'Spk',
+            backgroundColour: null,
+            foregroundColour: null,
+            isIndependent: false,
+          },
+          seatCount: 1,
+          maleCount: 1,
+          femaleCount: 0,
+          nonBinaryCount: 0,
+          unallocatedSeatCount: 0,
+        },
+      ],
+    }),
+  };
+});
+
 describe('MicrositePage', () => {
   it('renders the gauge story with narrative, chart, and sources', async () => {
     const stream = await renderToReadableStream(
@@ -682,6 +757,60 @@ describe('MicrositePage', () => {
         title: 'Recorded crime - uk-data-lab',
         description: expect.any(String),
         url: '/society/recorded-crime/',
+        type: 'article',
+      },
+    });
+  });
+
+  it('renders the Parliament seats story copy', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('parliament-seats'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain('a party needs 326 of them to hold more than half the chamber');
+    expect(html).toContain('A vacant seat is listed as its own party');
+    expect(html).toContain('Key facts');
+    expect(html).toContain('How to read this chart');
+    expect(html).toContain('Sources and further reading');
+    expect(html).toContain('Members API reference (UK Parliament)');
+    expect(html).toContain('Open Parliament Licence v3.0');
+    expect(html).toContain('href="/society"');
+    expect(html).toContain('Parliament seats');
+    expect(html.match(/<h1[^>]*>/g) ?? []).toHaveLength(1);
+  });
+
+  it('reads the headline numbers out of the fetched seat counts', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('parliament-seats'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain('data-testid="parliament-seats" data-value="650"');
+    expect(html).toContain('data-testid="parliament-largest-party" data-value="403"');
+    expect(html).toContain('data-testid="parliament-parties" data-value="18"');
+    expect(html).toContain('View the seats as a table');
+    expect(html).toContain('Labour');
+    expect(html).toContain('>403<');
+  });
+
+  it('fills the Parliament seats source note from the seats it fetched', async () => {
+    const stream = await renderToReadableStream(
+      <MicrositePage params={Promise.resolve(paramsFor('parliament-seats'))} />,
+    );
+    const html = await new Response(stream).text();
+    expect(html).toContain('The house held 650 seats across 18 parties');
+    expect(html).toContain('Labour held the largest block at 403');
+  });
+
+  it('returns a unique document title for the Parliament seats microsite', async () => {
+    await expect(
+      generateMetadata({ params: Promise.resolve(paramsFor('parliament-seats')) }),
+    ).resolves.toEqual({
+      title: 'Parliament seats - uk-data-lab',
+      description: expect.any(String),
+      openGraph: {
+        title: 'Parliament seats - uk-data-lab',
+        description: expect.any(String),
+        url: '/society/parliament-seats/',
         type: 'article',
       },
     });

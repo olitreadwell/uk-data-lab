@@ -165,4 +165,14 @@ test.describe('home', () => {
       page.locator('summary', { hasText: 'View the half hours as a table' }),
     ).toBeVisible();
   });
+
+  test('@smoke counts the seats held in the Commons', async ({ page }) => {
+    await page.goto('./society/parliament-seats');
+    const seats = await page.getAttribute('[data-testid="parliament-seats"]', 'data-value');
+    expect(Number(seats)).toBeGreaterThan(600);
+    const parties = await page.getAttribute('[data-testid="parliament-parties"]', 'data-value');
+    expect(Number(parties)).toBeGreaterThan(5);
+    await expect(page.getByRole('img', { name: /House of Commons seats by party/ })).toBeVisible();
+    await expect(page.locator('summary', { hasText: 'View the seats as a table' })).toBeVisible();
+  });
 });

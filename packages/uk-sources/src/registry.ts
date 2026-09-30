@@ -4,6 +4,7 @@ import { carbonIntensityAdapter } from './carbonIntensity';
 import { floodReadingsAdapter, floodStationsAdapter } from './floodMonitoring';
 import { foodHygieneAuthoritiesAdapter } from './foodHygiene';
 import { onsDatasetsAdapter } from './onsDatasets';
+import { parliamentSeatsAdapter } from './parliamentSeats';
 import { planningDatasetsAdapter } from './planningDatasets';
 import { policeCrimesAdapter } from './policeCrimes';
 import { tflBikePointsAdapter } from './tflBikePoints';
@@ -21,6 +22,7 @@ export const UK_DATA_SOURCES: UkDataAdapter<unknown>[] = [
   bankRateAdapter,
   policeCrimesAdapter,
   carbonIntensityAdapter,
+  parliamentSeatsAdapter,
 ];
 
 /** Looks up a source adapter by id. */

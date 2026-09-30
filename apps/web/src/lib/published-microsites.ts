@@ -12,4 +12,5 @@ export const PUBLISHED_MICROSITES: readonly string[] = [
   'bank-rate',
   'recorded-crime',
   'carbon-intensity',
+  'parliament-seats',
 ];

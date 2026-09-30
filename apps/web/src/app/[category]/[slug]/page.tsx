@@ -12,6 +12,7 @@ import { FoodHygieneRegistersChart } from '@/components/FoodHygieneRegistersChar
 import { GaugeRiversChart } from '@/components/GaugeRiversChart';
 import { MicrositeStory } from '@/components/MicrositeStory';
 import { OnsCatalogueChart } from '@/components/OnsCatalogueChart';
+import { ParliamentSeatsChart } from '@/components/ParliamentSeatsChart';
 import { PlanningDatasetChart } from '@/components/PlanningDatasetChart';
 import { PoliceCrimeChart } from '@/components/PoliceCrimeChart';
 import { ReportIssueButton } from '@/components/ReportIssueButton';
@@ -48,6 +49,7 @@ import {
   fetchOnsCatalogueSummary,
   ONS_PEAK_STAMP_YEARS,
 } from '@/lib/ons-catalogue-data';
+import { fetchParliamentSeatSummary } from '@/lib/parliament-seats-data';
 import { fetchPlanningDatasetSummary } from '@/lib/planning-data';
 import {
   fetchRecordedCrimeSummary,
@@ -589,6 +591,45 @@ async function renderStoryContent(slug: string, dataNote: string): Promise<Story
           veryHighCount: formatCount(bandCount('very high')),
           lowestIntensity: formatCount(window.lowestPeriod.intensity),
           highestIntensity: formatCount(window.highestPeriod.intensity),
+          asOf: buildDate,
+        }),
+      };
+    }
+    case 'parliament-seats': {
+      const summary = await fetchParliamentSeatSummary();
+      const largestParty = summary.largestParty;
+      return {
+        chart: <ParliamentSeatsChart summary={summary} />,
+        stats: (
+          <dl className="grid gap-6 py-[var(--spacing-2xl)] sm:grid-cols-3">
+            <StatCard
+              label="Seats in the Commons"
+              value={formatCount(summary.seatCount)}
+              accent="purple"
+              testId="parliament-seats"
+              dataValue={summary.seatCount}
+            />
+            <StatCard
+              label={largestParty.party.name}
+              value={formatCount(largestParty.seatCount)}
+              accent="purple"
+              testId="parliament-largest-party"
+              dataValue={largestParty.seatCount}
+            />
+            <StatCard
+              label="Parties holding a seat"
+              value={formatCount(summary.partyCount)}
+              accent="purple"
+              testId="parliament-parties"
+              dataValue={summary.partyCount}
+            />
+          </dl>
+        ),
+        dataNote: fillStoryDataNote(dataNote, {
+          seatCount: formatCount(summary.seatCount),
+          partyCount: formatCount(summary.partyCount),
+          largestParty: largestParty.party.name,
+          largestPartySeats: formatCount(largestParty.seatCount),
           asOf: buildDate,
         }),
       };

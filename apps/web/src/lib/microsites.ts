@@ -22,7 +22,8 @@ export type MicrositeDataSource =
   | 'Wikipedia & Wikidata'
   | 'Bank of England'
   | 'Home Office'
-  | 'Carbon Intensity (NESO)';
+  | 'Carbon Intensity (NESO)'
+  | 'UK Parliament';
 
 /** The main visualisation used by a microsite story. */
 export type MicrositeChartType =
@@ -652,6 +653,59 @@ export const MICROSITES: MicrositeConfig[] = withHiddenMicrositesRemoved<Microsi
         label: 'Creative Commons Attribution 4.0 International',
         url: 'https://creativecommons.org/licenses/by/4.0/',
         kind: 'licence',
+      },
+    ],
+  },
+  {
+    slug: 'parliament-seats',
+    keyFacts: [
+      'The Commons holds 650 seats, and 326 are needed for a majority.',
+      "Every seat is one square, so a party's block is the seats it holds.",
+      '18 parties hold at least one seat, and six of them hold exactly one.',
+      'A vacant seat is listed as a party, so the parties add up to the whole chamber.',
+      'The API publishes a colour for each party; the Speaker and one other carry none.',
+    ],
+    howToRead:
+      'Each square is one seat and the colour is the party, so the size of a block is the seats that party holds. The table under the chart carries the numbers.',
+    sourceUrl: 'https://members-api.parliament.uk/index.html',
+    label: 'Parliament seats',
+    eyebrow: 'the House of Commons',
+    title: 'The House of Commons holds 650 seats, and Labour holds 403 of them.',
+    description:
+      'The UK Parliament Members API counts the seats each party holds in the House of Commons, and the members behind them. Labour holds 403 of the 650 seats, the Conservatives hold 118, and 18 parties hold at least one seat.',
+    paragraphs: [
+      'The House of Commons holds 650 seats, and a party needs 326 of them to hold more than half the chamber. The Members API counts the seats each party holds and, under each one, how many members are women and how many are men. On the day this page was built the parties held all 650 seats between them.',
+      'The chamber is wider than two parties. 18 parties hold at least one seat, and six of them hold exactly one. Behind Labour and the Conservatives, the Liberal Democrats hold 71, Reform UK and the Scottish National Party hold eight each, and Sinn Féin holds seven even though its MPs do not take their seats at Westminster.',
+      'The API reports a few things worth reading with care. A vacant seat is listed as its own party, named Vacant, with no member behind it, so the parties add up to the whole chamber while the members named run one short. The Speaker is listed as a party too. Each party carries the colour the API publishes for it, and two of them carry none, so those squares use the grey the page keeps for them.',
+      'The totals come from the call the page makes at build time, so the seat counts and the member counts move with it as seats change hands.',
+    ],
+    accent: 'purple',
+    dataSource: 'UK Parliament',
+    chartType: 'Waffle',
+    category: 'Society & community',
+    dataNote:
+      "Data: the UK Parliament Members API state of the parties for the House of Commons, read from https://members-api.parliament.uk/api/Parties/StateOfTheParties. The house held {seatCount} seats across {partyCount} parties on {asOf}, and {largestParty} held the largest block at {largestPartySeats}. A vacant seat is listed as its own party and the Speaker is listed as a party, so the parties add up to the whole chamber while the members named behind them can run short by the vacant seat. The API publishes each party's own colour, and a party without one is drawn in grey. Parliament publishes the data under the Open Parliament Licence v3.0. If the API is unreachable at build time the page falls back to the committed snapshot in apps/web/src/fixtures/parliament-seats-sample.json and logs that it did.",
+    references: [
+      {
+        label: 'Members API reference (UK Parliament)',
+        url: 'https://members-api.parliament.uk/index.html',
+        kind: 'data',
+      },
+      {
+        label:
+          'State of the parties endpoint, Commons on 1 October 2026 (UK Parliament Members API)',
+        url: 'https://members-api.parliament.uk/api/Parties/StateOfTheParties/1/2026-10-01',
+        kind: 'data',
+      },
+      {
+        label: 'Open Parliament Licence v3.0',
+        url: 'https://www.parliament.uk/site-information/copyright-parliament/open-parliament-licence/',
+        kind: 'licence',
+      },
+      {
+        label: '2024 United Kingdom general election (Wikipedia)',
+        url: 'https://en.wikipedia.org/wiki/2024_United_Kingdom_general_election',
+        kind: 'history',
       },
     ],
   },
