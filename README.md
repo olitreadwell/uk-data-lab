@@ -50,9 +50,10 @@ node scripts/sync-connectors.mjs                     # uses ../uk-open-data-conn
 node scripts/sync-connectors.mjs --from /path/to/repo
 ```
 
-The script renames the `@nzlab` scope to `@uk-lab`, strips the `.js` extension
-from relative imports, and points the package entry at `src/`. All three happen
-in the script rather than by hand, so a sync is reproducible.
+The script renames whatever scope the connectors package ships under to
+`@uk-lab`, strips the `.js` extension from relative imports, and points the
+package entry at `src/`. All three happen in the script rather than by hand, so
+a sync is reproducible.
 
 Edit `packages/uk-sources` only by syncing from the connectors repo.
 
