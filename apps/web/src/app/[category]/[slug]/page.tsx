@@ -1,5 +1,5 @@
-import { Container } from '@uklab/ui';
-import type { CarbonIntensityIndex } from '@uklab/uk-sources';
+import { Container } from '@uk-lab/ui';
+import type { CarbonIntensityIndex } from '@uk-lab/uk-sources';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';

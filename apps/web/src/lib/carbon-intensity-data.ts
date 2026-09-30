@@ -2,8 +2,8 @@ import {
   fetchCarbonIntensityWindow as fetchCarbonIntensityWindowLive,
   formatCarbonIntensityInstant,
   parseCarbonIntensityWindow,
-} from '@uklab/uk-sources';
-import type { CarbonIntensityIndex, CarbonIntensityWindow } from '@uklab/uk-sources';
+} from '@uk-lab/uk-sources';
+import type { CarbonIntensityIndex, CarbonIntensityWindow } from '@uk-lab/uk-sources';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 

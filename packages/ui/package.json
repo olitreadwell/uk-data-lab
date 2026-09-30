@@ -1,5 +1,5 @@
 {
-  "name": "@uklab/ui",
+  "name": "@uk-lab/ui",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -39,9 +39,9 @@
     "zod": "^3.23"
   },
   "devDependencies": {
-    "@uklab/config-eslint": "*",
-    "@uklab/config-tailwind": "*",
-    "@uklab/config-typescript": "*",
+    "@uk-lab/config-eslint": "*",
+    "@uk-lab/config-tailwind": "*",
+    "@uk-lab/config-typescript": "*",
     "shadcn": "^4.17.0",
     "@storybook/addon-a11y": "^8.6.0",
     "@storybook/addon-docs": "^8.6.0",

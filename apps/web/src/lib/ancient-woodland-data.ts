@@ -1,8 +1,8 @@
 import {
   fetchAncientWoodlandProfile as fetchAncientWoodlandProfileLive,
   parseAncientWoodlandProfile,
-} from '@uklab/uk-sources';
-import type { AncientWoodlandProfile } from '@uklab/uk-sources';
+} from '@uk-lab/uk-sources';
+import type { AncientWoodlandProfile } from '@uk-lab/uk-sources';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 

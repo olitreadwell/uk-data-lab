@@ -1,4 +1,4 @@
-import config from '@uklab/config-eslint/base';
+import config from '@uk-lab/config-eslint/base';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 

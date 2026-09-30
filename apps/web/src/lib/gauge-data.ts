@@ -3,8 +3,8 @@ import {
   parseFloodStations,
   summarizeFloodReadings,
   UkSourceError,
-} from '@uklab/uk-sources';
-import type { FloodReading, FloodReadingSummary, FloodStation } from '@uklab/uk-sources';
+} from '@uk-lab/uk-sources';
+import type { FloodReading, FloodReadingSummary, FloodStation } from '@uk-lab/uk-sources';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 

@@ -1,6 +1,6 @@
 'use client';
 
-import type { PlanningDataset } from '@uklab/uk-sources';
+import type { PlanningDataset } from '@uk-lab/uk-sources';
 import { Bar, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import type { TooltipContentProps } from 'recharts';
 

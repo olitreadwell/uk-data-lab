@@ -31,7 +31,7 @@ deployed static chart.
 ## What this example shows
 
 - `apps/web/src/lib/gauge-data.ts` calls `parseFloodStations` from
-  `@uklab/uk-sources` to pull the station list at build time, and
+  `@uk-lab/uk-sources` to pull the station list at build time, and
   `parseFloodReadings` for the live level at Bourton Dickler.
 - The build falls back to committed snapshots when the agency API is slow or
   blocked, so the static export always succeeds.
@@ -40,7 +40,7 @@ deployed static chart.
 
 ## Connectors wiring
 
-The site uses one package from the connectors repo, `@uklab/uk-sources`,
+The site uses one package from the connectors repo, `@uk-lab/uk-sources`,
 vendored under `packages/uk-sources`. npm git dependencies cannot target a
 subpackage inside a workspace monorepo, so the package is copied here and kept
 in sync with a script:
@@ -50,7 +50,7 @@ node scripts/sync-connectors.mjs                     # uses ../uk-open-data-conn
 node scripts/sync-connectors.mjs --from /path/to/repo
 ```
 
-The script renames the `@nzlab` scope to `@uklab`, strips the `.js` extension
+The script renames the `@nzlab` scope to `@uk-lab`, strips the `.js` extension
 from relative imports, and points the package entry at `src/`. All three happen
 in the script rather than by hand, so a sync is reproducible.
 
