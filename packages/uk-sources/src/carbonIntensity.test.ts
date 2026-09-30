@@ -260,9 +260,7 @@ describe('carbonIntensityAdapter', () => {
     vi.useFakeTimers();
     vi.setSystemTime(frozenInstant);
     try {
-      const fetchImpl = vi.fn(async () =>
-        jsonResponse(readFixtureJson('carbon-intensity.json')),
-      );
+      const fetchImpl = vi.fn(async () => jsonResponse(readFixtureJson('carbon-intensity.json')));
       const window = await carbonIntensityAdapter.fetchLive({ fetchImpl });
 
       expect(fetchImpl).toHaveBeenCalledOnce();
